@@ -9,14 +9,14 @@ import java.util.function.Function;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Emissive;
 import app.engine.tiles.Lighting;
-import app.misc.Position;
+import app.misc.IntegerPosition;
 
 public class Map {
 
-	HashMap<Position<Integer>, BaseTile> tiles = new HashMap<>(1024);
-	HashMap<Position<Integer>, Lighting> lighting = new HashMap<>(1024);
+	HashMap<IntegerPosition, BaseTile> tiles = new HashMap<>(1024);
+	HashMap<IntegerPosition, Lighting> lighting = new HashMap<>(1024);
 	ArrayList<Emissive> lightEmitters = new ArrayList<>();
-	public double minLightLevel = .02;
+	public double minLightLevel = .04;
 
 	public static double lightFactor(double height, double pathDistance) {
 		double angleOfImpact = Math.atan2(pathDistance, height);
@@ -39,10 +39,10 @@ public class Map {
 		//using the inverse of the function from light factor
 		//determine the maximum number of tiles away that need to be calculated
 		double maxDistance = Math.tan(Math.acos(minLightLevel / e.lightBrightness()))*e.lightHeight();
-		Stack<Position<Integer>> toCalculate = new Stack<>();
-		Stack<Position<Integer>> completed = new Stack<>();
-		HashMap<Position<Integer>, Boolean> added = new HashMap<>();
-		Position<Integer> start = e.getSource().floorToIntPos();
+		Stack<IntegerPosition> toCalculate = new Stack<>();
+		Stack<IntegerPosition> completed = new Stack<>();
+		HashMap<IntegerPosition, Boolean> added = new HashMap<>();
+		IntegerPosition start = e.getSource().floorToIntPos();
 		toCalculate.push( start );
 		added.put(start, true);
 		for(int pathDist = 0; pathDist<=maxDistance; pathDist++) {
@@ -51,30 +51,30 @@ public class Map {
 			}
 			if(pathDist!=maxDistance)
 				while(!completed.isEmpty()) {
-					Position<Integer> pos = completed.pop();
-					Position<Integer> tmp;
+					IntegerPosition pos = completed.pop();
+					IntegerPosition tmp;
 					
-					tmp = pos.iAdd( 0,  1);
+					tmp = pos.add( 0,  1);
 					if(!added.getOrDefault(tmp, false) && usesLighting(tmp)) added.put(toCalculate.push(tmp), true);
 
-					tmp = pos.iAdd( 0, -1);
+					tmp = pos.add( 0, -1);
 					if(!added.getOrDefault(tmp, false) && usesLighting(tmp)) added.put(toCalculate.push(tmp), true);
 
-					tmp = pos.iAdd( 1, 0);
+					tmp = pos.add( 1, 0);
 					if(!added.getOrDefault(tmp, false) && usesLighting(tmp)) added.put(toCalculate.push(tmp), true);
 
-					tmp = pos.iAdd(-1, 0);
+					tmp = pos.add(-1, 0);
 					if(!added.getOrDefault(tmp, false) && usesLighting(tmp)) added.put(toCalculate.push(tmp), true);
 				}
 		}
 	}
 	
-	private Function<Position<Integer>, Lighting> computeNewLighting = new Function<Position<Integer>, Lighting>() {
-		public Lighting apply(Position<Integer> t) {
+	private Function<IntegerPosition, Lighting> computeNewLighting = new Function<IntegerPosition, Lighting>() {
+		public Lighting apply(IntegerPosition t) {
 			return new Lighting();
 		}
 	};
-	private void calculateLighting(Emissive e, double pathLen, Position<Integer> pos) {
+	private void calculateLighting(Emissive e, double pathLen, IntegerPosition pos) {
 		BaseTile tile = getTile(pos);
 		if(tile!=null && tile.isOpaque()) return;
 
@@ -88,7 +88,7 @@ public class Map {
 	
 	public void setTile(BaseTile tile, int x, int y) {
 		if(tile==null) throw new NullPointerException("Attempt to set tile to null");
-		Position<Integer> pos = new Position<Integer>(x, y);
+		IntegerPosition pos = new IntegerPosition(x, y);
 		List<Emissive> emissives = tile.getEmissives(pos);
 		if(emissives!=null) {
 			for (Emissive emissive : emissives) {
@@ -100,22 +100,22 @@ public class Map {
 	}
 	
 	public BaseTile getTile(int x, int y) {
-		Position<Integer> pos = new Position<Integer>(x, y);
+		IntegerPosition pos = new IntegerPosition(x, y);
 		return getTile(pos);
 	}
-	public BaseTile getTile(Position<Integer> pos) {
+	public BaseTile getTile(IntegerPosition pos) {
 		return tiles.get(pos);
 	}
 	public Lighting getLight(int x, int y) {
-		return getLight(new Position<Integer>(x, y));
+		return getLight(new IntegerPosition(x, y));
 	}
-	public Lighting getLight(Position<Integer> pos ) {
+	public Lighting getLight(IntegerPosition pos ) {
 		return lighting.get(pos);
 	}
 	/**
 	 * Check if lighting needs to be calculated for some tile space
 	 * */
-	public boolean usesLighting(Position<Integer> pos) {
+	public boolean usesLighting(IntegerPosition pos) {
 		return getTile(pos) == null || !getTile(pos).isOpaque();
 	}
 }

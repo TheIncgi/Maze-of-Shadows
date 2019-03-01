@@ -34,4 +34,9 @@ public class Lighting {
 		}
 		return color;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("Light: [Brightness: %.3f, Color: %s]", color.getBrightness(), color);
+	}
 }

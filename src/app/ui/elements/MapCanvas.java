@@ -1,10 +1,10 @@
 package app.ui.elements;
 
-import app.Launch;
+import app.Game;
 import app.engine.Map;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Lighting;
-import app.misc.Position;
+import app.misc.DoublePosition;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
@@ -16,11 +16,12 @@ import javafx.scene.shape.Circle;
 
 public class MapCanvas extends Pane{
 	Map map;
-	Position<Double> focus = new Position<Double>(0d, 0d);
+	DoublePosition focus = new DoublePosition(0d, 0d);
 	Canvas tiles, lighting;
 	boolean smoothLighting = true;
 	GaussianBlur blur;
-	
+	boolean debugLighting = true;
+
 	double scale = 32;
 	public MapCanvas(double wid, double hei) {
 		tiles = new Canvas(wid, hei);
@@ -33,19 +34,26 @@ public class MapCanvas extends Pane{
 			lighting.setEffect(blur);
 		this.getChildren().add(tiles);
 		this.getChildren().add(lighting);
+		this.setOnMouseClicked(e->{
+			double tileX = (e.getX()-tiles.getWidth()/2)/scale - focus.getX();
+			double tileY = (e.getY()-tiles.getHeight()/2)/scale - focus.getY();
+			int tx = (int)Math.floor(tileX);
+			int ty = (int)Math.floor(tileY);
+			System.out.printf("Click <%d, %d> %s %s\n", tx, ty, map.getTile(tx, ty), map.getLight(tx, ty));
+		});
 	}
-	
+
 	/**
 	 * Pixel width of each tile on the canvas
 	 * */
-	
+
 	public void draw() {
 		GraphicsContext g = tiles.getGraphicsContext2D();
 		GraphicsContext l = lighting.getGraphicsContext2D();
 		g.clearRect(0, 0, tiles.getWidth(), tiles.getHeight());
 		l.setFill(Color.BLACK);
 		l.fillRect(0, 0, lighting.getWidth(), lighting.getHeight());
-		Image defaultFloor = Launch.instance().genericFloor;
+		Image defaultFloor = Game.instance().genericFloor;
 		if(map==null) {
 			g.setFill(Color.BLACK);
 			g.fillRect(0, 0, tiles.getWidth(), tiles.getHeight());
@@ -54,10 +62,10 @@ public class MapCanvas extends Pane{
 			double halfWidth  = tiles.getWidth()/2;
 			int upTiles = (int) Math.ceil(halfHeight / scale) +1;
 			int leftTiles = (int) Math.ceil(halfWidth / scale) +1;
-			
+
 			for(int y = -upTiles; y<=upTiles; y++) {
 				for(int x = -leftTiles; x<=leftTiles; x++) {
-					
+
 					//tile phase
 					int tileX = x-focus.getFloorX();
 					int tileY = y-focus.getFloorY();
@@ -65,7 +73,7 @@ public class MapCanvas extends Pane{
 						tileX = tileX;
 					BaseTile t = map.getTile(x, y);
 					//System.out.printf("Drawing: <%d, %d> %s\n", tileX, tileY, t);
-					
+
 					double px = (x-focus.getX())*scale + halfWidth;
 					double py = (y-focus.getY())*scale + halfHeight;
 					if(t!=null) {
@@ -73,74 +81,82 @@ public class MapCanvas extends Pane{
 					}else{
 						g.drawImage(defaultFloor, px, py, scale, scale);
 					}
-					
+
 					//due to the fact that the lighting canvas is larger and shifted over by -scale pixels in the x and y dir
 					//the draw coords must also be shifted
 					px+=scale;
 					py+=scale;
-					
+
 					//lighting phase
 					Lighting lightDat;
 					if(t!=null && t.isOpaque()) {
-						lightDat = map.getLight(x, y+1);
-						if(lightDat!=null) {
-							clipSide(px, py, scale, scale, Side.TOP);
-							l.setFill(lightDat.getColor());
-							l.fillRect(px, py, scale, scale);
+						if(!isSmoothLighting()) {
+							lightDat = map.getLight(x, y+1);
+							if(lightDat!=null) {
+								clipSide(px, py, scale, scale, Side.TOP);
+								l.setFill(lightDat.getColor());
+								l.fillRect(px, py, scale, scale);
+							}
+
+							lightDat = map.getLight(x, y-1);
+							if(lightDat!=null) {
+								clipSide(px, py, scale, scale, Side.BOTTOM);
+								l.setFill(lightDat.getColor());
+								l.fillRect(px, py, scale, scale);
+							}
+							lightDat = map.getLight(x+1, y);
+							if(lightDat!=null) {
+								clipSide(px, py, scale, scale, Side.RIGHT);
+								l.setFill(lightDat.getColor());
+								l.fillRect(px, py, scale, scale);
+							}
+							lightDat = map.getLight(x-1, y);
+							if(lightDat!=null) {
+								clipSide(px, py, scale, scale, Side.LEFT);
+								l.setFill(lightDat.getColor());
+								l.fillRect(px, py, scale, scale);
+							}
+							clipNone();
 						}
-						
-						lightDat = map.getLight(x, y-1);
-						if(lightDat!=null) {
-							clipSide(px, py, scale, scale, Side.BOTTOM);
-							l.setFill(lightDat.getColor());
-							l.fillRect(px, py, scale, scale);
-						}
-						lightDat = map.getLight(x+1, y);
-						if(lightDat!=null) {
-							clipSide(px, py, scale, scale, Side.RIGHT);
-							l.setFill(lightDat.getColor());
-							l.fillRect(px, py, scale, scale);
-						}
-						lightDat = map.getLight(x-1, y);
-						if(lightDat!=null) {
-							clipSide(px, py, scale, scale, Side.LEFT);
-							l.setFill(lightDat.getColor());
-							l.fillRect(px, py, scale, scale);
-						}
-						clipNone();
 					}else {//not opaque or null tile
 						lightDat = map.getLight(tileX, tileY);
 						if(lightDat!=null) {
 							l.setFill(lightDat.getColor());
 							l.fillRect(px, py, scale, scale);
+							
 						}
 					}
-					
+
 				}
 			}
 		}
 	}
 	
+
 	public void setSmoothLighting(boolean status) {
 		if(status==smoothLighting)return;
 		smoothLighting = status;
 		lighting.setEffect(smoothLighting?blur:null);
 	}
 	public boolean isSmoothLighting() {
-		return isSmoothLighting();
+		return smoothLighting;
 	}
-	
-	
+
+
 	public Map getMap() {
 		return map;
 	}
 	public void setMap(Map map) {
 		this.map = map;
 	}
-	public Position<Double> getFocus() {
+	public DoublePosition getFocus() {
 		return focus;
 	}
-	public void setFocus(Position<Double> focus) {
+	/**
+	 * Ex: setting the players position
+	 *     will keep the map focused on the player
+	 * */
+	public void setFocus(DoublePosition focus) {
 		this.focus = focus;
 	}
 	public double getScale() {
@@ -158,7 +174,7 @@ public class MapCanvas extends Pane{
 	}
 	private void clipSide(double px, double py, double w, double h, Side s) {
 		GraphicsContext g= lighting.getGraphicsContext2D();
-		
+
 		if(clipping) clipNone();
 		g.save();
 		double cx = px + w/2, cy = py + h/2;
@@ -188,7 +204,7 @@ public class MapCanvas extends Pane{
 		g.clip();
 		clipping = true;
 	}
-	
+
 	public static enum Side{
 		TOP,BOTTOM, LEFT, RIGHT
 	}

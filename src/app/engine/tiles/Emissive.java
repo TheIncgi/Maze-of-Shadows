@@ -1,6 +1,6 @@
 package app.engine.tiles;
 
-import app.misc.Position;
+import app.misc.DoublePosition;
 import javafx.scene.paint.Color;
 
 abstract public class Emissive {
@@ -14,5 +14,5 @@ abstract public class Emissive {
 	/**controls the distance that light stays at full strength*/
 	public double lightBrightness() {return STANDARD_LIGHT_BRIGHTNESS;}
 	
-	abstract public Position<Double> getSource();
+	abstract public DoublePosition getSource();
 }

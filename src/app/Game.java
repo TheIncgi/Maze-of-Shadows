@@ -1,5 +1,6 @@
 package app;
 
+import app.engine.Engine;
 import app.ui.scenes.MainMenu;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -8,19 +9,21 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import resources.R;
 
-public class Launch extends Application{
-	
+public class Game extends Application{
+
 	public static final int SIZE = 1000;
-	
-	private static Launch instance;
+	private static Game instance;
 	public static final String TITLE = "Maze of Shadows";
+	
+	private Engine engine;
 	
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
-	public Launch() {
+	public Game() {
 		instance = this;
+		engine = new Engine();
 	}
 	
 	
@@ -41,7 +44,10 @@ public class Launch extends Application{
 	
 	
 	
-	public static Launch instance() {
+	public static Game instance() {
 		return instance;
+	}
+	public Engine getEngine() {
+		return engine;
 	}
 }
