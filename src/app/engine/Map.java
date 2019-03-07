@@ -3,6 +3,7 @@ package app.engine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Stack;
 import java.util.function.Function;
 
@@ -38,7 +39,7 @@ public class Map {
 	private void solveLightForEmissive(Emissive e) {
 		//using the inverse of the function from light factor
 		//determine the maximum number of tiles away that need to be calculated
-		double maxDistance = Math.tan(Math.acos(minLightLevel / e.lightBrightness()))*e.lightHeight();
+		double maxDistance = Math.tan(Math.acos(minLightLevel / e.brightness()))*e.lightHeight();
 		Stack<IntegerPosition> toCalculate = new Stack<>();
 		Stack<IntegerPosition> completed = new Stack<>();
 		HashMap<IntegerPosition, Boolean> added = new HashMap<>();
@@ -74,12 +75,18 @@ public class Map {
 			return new Lighting();
 		}
 	};
+	
+	private Random r = new Random();
 	private void calculateLighting(Emissive e, double pathLen, IntegerPosition pos) {
 		BaseTile tile = getTile(pos);
 		if(tile!=null && tile.isOpaque()) return;
-
+		
+		r.setSeed(pos.hashCode() + System.currentTimeMillis()/e.flickerTime()); //pseudo random value same for each tile in some time range
+		
 		double factor = lightFactor(e.lightHeight(), pathLen);
-		factor *= e.lightBrightness();
+		factor *= e.brightness();
+		factor += r.nextGaussian()*e.flickerAmount();
+		factor = Math.pow(factor, e.getFocus());
 
 		Lighting lightData = lighting.computeIfAbsent(pos, computeNewLighting);
 		lightData.add(e.getLightColor(), factor);

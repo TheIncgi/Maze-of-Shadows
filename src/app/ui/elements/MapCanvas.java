@@ -1,15 +1,25 @@
 package app.ui.elements;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import app.Game;
 import app.engine.Map;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Lighting;
 import app.misc.DoublePosition;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -22,6 +32,7 @@ public class MapCanvas extends Pane{
 	GaussianBlur blur;
 	boolean debugLighting = true;
 
+
 	double scale = 32;
 	public MapCanvas(double wid, double hei) {
 		tiles = new Canvas(wid, hei);
@@ -30,6 +41,7 @@ public class MapCanvas extends Pane{
 		lighting.setTranslateY(-scale);
 		lighting.setBlendMode(BlendMode.MULTIPLY);
 		blur = new GaussianBlur(scale*.65);
+		blur.setInput(Game.instance().getSettings().colorAdjust);
 		if(smoothLighting)
 			lighting.setEffect(blur);
 		this.getChildren().add(tiles);
@@ -123,16 +135,39 @@ public class MapCanvas extends Pane{
 						if(lightDat!=null) {
 							l.setFill(lightDat.getColor());
 							l.fillRect(px, py, scale, scale);
-							
+
 						}
 					}
 
 				}
 			}
 		}
+		snapshotFrames();
+	}
+
+	//debug tool
+	private void snapshotFrames() {
+		try {
+			SnapshotParameters sp = new SnapshotParameters();
+			WritableImage lImg = new WritableImage((int)tiles.getWidth(), (int)tiles.getHeight());
+			tiles.snapshot(sp, lImg);
+			File tmp = new File("tiles.png");
+			System.out.println("Writing to "+tmp.getAbsolutePath());
+			ImageIO.write(SwingFXUtils.fromFXImage(lImg, null), "png", tmp);
+			System.out.println(tmp.exists());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			SnapshotParameters sp = new SnapshotParameters();
+			WritableImage lImg = new WritableImage((int)lighting.getWidth(), (int)lighting.getHeight());
+			lighting.snapshot(sp, lImg);
+			ImageIO.write(SwingFXUtils.fromFXImage(lImg, null), "png", new File("light.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-
 	public void setSmoothLighting(boolean status) {
 		if(status==smoothLighting)return;
 		smoothLighting = status;

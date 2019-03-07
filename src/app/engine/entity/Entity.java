@@ -16,24 +16,30 @@ public class Entity {
 	
 	/**Measured in tiles per game tick*/
 	public static final double MAX_ENTITY_SPEED = .95;
+	public static final double baseSpeed = 1;
 	
 	public boolean intersectsTile(IntegerPosition tilePos) {
 		return intersectsTile(tilePos.getX(), tilePos.getY());
 	}
 	
 	
-	
+	/**return speed in tiles per tick*/
 	public double getWalkingSpeed() {
 		return Engine.tilesPerSecond(2); //walk 2 tiles per second
 	}
+	/**returns sprinting speed in tiles per tick*/
 	public double getSprintingSpeed() {
 		return getWalkingSpeed()*1.75;
 	}
 	
+	/**Called each game tick<br>
+	 * Entity logic should go here*/
+	public void onTick() {}
+	
 	/**
-	 * Called each gameTick to update the entity's position
+	 * Called each game tick to update the entity's position
 	 * */
-	public void doMovement() {
+	public final void doMovement() {
 		pos.addToSelf(velocity);
 		tileCheck();
 	}

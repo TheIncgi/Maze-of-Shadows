@@ -1,12 +1,13 @@
 package app;
 
 import app.engine.Engine;
+import app.ui.elements.SettingsPane;
 import app.ui.scenes.MainMenu;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+
 import resources.R;
 
 public class Game extends Application{
@@ -28,16 +29,21 @@ public class Game extends Application{
 	
 	
 	public static Image genericFloor;
-	
+	private SettingsPane settings;
+	private Stage stage;
 	@Override
 	public void start(Stage stage) throws Exception {
-		genericFloor = new Image(R.class.getResourceAsStream("generic_floor.png"));
+		this.stage = stage;
+		settings = new SettingsPane();
+		genericFloor = new Image(R.class.getResourceAsStream("generic_floor_whiter.png"));
 		Scene scene = new MainMenu(SIZE, SIZE);
 		stage.setScene(scene);
 		
 		stage.setTitle(TITLE);
 		
 		stage.setResizable( false );
+		
+		
 		
 		stage.show();
 	}
@@ -49,5 +55,13 @@ public class Game extends Application{
 	}
 	public Engine getEngine() {
 		return engine;
+	}
+	
+	public SettingsPane getSettings() {
+		return settings;
+	}
+
+	public void exit() {
+		stage.close();
 	}
 }

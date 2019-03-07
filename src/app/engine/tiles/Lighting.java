@@ -19,16 +19,20 @@ public class Lighting {
 		valid = false;
 	}
 	public void add(Color color, double factor) {
-		rgb[0] += color.getRed() * factor;
-		rgb[1] += color.getGreen() * factor;
-		rgb[2] += color.getBlue() * factor;
+		rgb[0] += Math.pow(color.getRed(),2) * factor;
+		rgb[1] += Math.pow(color.getGreen(),2) * factor;
+		rgb[2] += Math.pow(color.getBlue(), 2) * factor;
 		valid = false;
 	}
 	
 	public Color getColor() {
 		if(!valid) {
-			for(int i = 0; i<3; i++)
+			for(int i = 0; i<3; i++) {
+				//rgb[i]*= 8; //move to game settings
+				rgb[i]=Math.sqrt(rgb[i]);
 				rgb[i]=Utils.clamp(rgb[i], 0, 1);
+				
+			}
 			color = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 			valid = true;
 		}

@@ -8,6 +8,7 @@ import resources.R;
 abstract public class BaseDrawable implements IDrawable{
 	protected Image image;
 	
+	/**Get the image used to draw the current tile/entity*/
 	public Image getImage() {
 		if (image == null) {
 			image = new Image(R.class.getResourceAsStream( getResourceName() ));
