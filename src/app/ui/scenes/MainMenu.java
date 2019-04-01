@@ -6,6 +6,7 @@ import app.Game;
 import app.engine.MapGenerator;
 import app.ui.elements.CreditsPane;
 import app.ui.elements.HighScorePane;
+import app.ui.elements.HowToPlayPane;
 import app.ui.elements.MapCanvas;
 import app.ui.elements.SettingsPane;
 import app.ui.elements.SlidingPane;
@@ -80,6 +81,11 @@ public class MainMenu extends Scene {
 				HighScorePane h = Game.instance().getHighScorePane();
 				h.setOnReturn(()->{sliding.fromRight(buttonSet);});
 				sliding.fromLeft(h);
+			});
+			howTo.setOnAction(e->{
+				HowToPlayPane h = Game.instance().getHowToPlayPane();
+				h.setOnReturn(()->{sliding.fromDown(buttonSet);});
+				sliding.fromUp(h);
 			});
 			
 			exit.setOnAction(e->{
