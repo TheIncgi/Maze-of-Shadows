@@ -4,6 +4,8 @@ package app.ui.scenes;
 
 import app.Game;
 import app.engine.MapGenerator;
+import app.ui.elements.CreditsPane;
+import app.ui.elements.HighScorePane;
 import app.ui.elements.MapCanvas;
 import app.ui.elements.SettingsPane;
 import app.ui.elements.SlidingPane;
@@ -51,22 +53,33 @@ public class MainMenu extends Scene {
 	
 	
 	public class MainMenuOptions extends VBox{
-		public Button newGame, options, howTo, about, exit;
+		public Button newGame, options, howTo, about, exit, highScore;
 		public MainMenuOptions() {
 			super(5);
 			newGame = new Button("New Game");
 			options = new Button("Options");
+			highScore = new Button("High Scores");
 			howTo = new Button("How to Play");
-			about = new Button("About");
+			about = new Button("Credits");
 			exit = new Button("Exit");
 			
-			this.getChildren().addAll(newGame, options, howTo, about, exit);
+			this.getChildren().addAll(newGame, options, howTo, highScore, about, exit);
 			this.setAlignment(Pos.CENTER);
 			
 			options.setOnAction(e->{
 				SettingsPane p = Game.instance().getSettings();
 				p.setOnReturn(()->{sliding.fromLeft(buttonSet);});
-				sliding.fromRight(Game.instance().getSettings());
+				sliding.fromRight(p);
+			});
+			about.setOnAction(e->{
+				CreditsPane c = Game.instance().getCreditsPane();
+				c.setOnReturn(()->{sliding.fromUp(buttonSet);});
+				sliding.fromDown(c);
+			});
+			highScore.setOnAction(e->{
+				HighScorePane h = Game.instance().getHighScorePane();
+				h.setOnReturn(()->{sliding.fromRight(buttonSet);});
+				sliding.fromLeft(h);
 			});
 			
 			exit.setOnAction(e->{
