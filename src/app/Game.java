@@ -1,6 +1,9 @@
 package app;
 
 import app.engine.Engine;
+import app.ui.elements.CreditsPane;
+import app.ui.elements.HighScorePane;
+import app.ui.elements.HowToPlayPane;
 import app.ui.elements.SettingsPane;
 import app.ui.scenes.MainMenu;
 import javafx.application.Application;
@@ -30,11 +33,17 @@ public class Game extends Application{
 	
 	public static Image genericFloor;
 	private SettingsPane settings;
+	private HighScorePane highScorePane;
+	private CreditsPane creditsPane;
+	private HowToPlayPane howToPlayPane;
 	private Stage stage;
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
 		settings = new SettingsPane();
+		highScorePane = new HighScorePane();
+		creditsPane = new CreditsPane();
+		howToPlayPane = new HowToPlayPane();
 		genericFloor = new Image(R.class.getResourceAsStream("generic_floor_whiter.png"));
 		Scene scene = new MainMenu(SIZE, SIZE);
 		stage.setScene(scene);
@@ -59,6 +68,18 @@ public class Game extends Application{
 	
 	public SettingsPane getSettings() {
 		return settings;
+	}
+	
+	public HowToPlayPane getHowToPlayPane() {
+		return howToPlayPane;
+	}
+	
+	public CreditsPane getCreditsPane() {
+		return creditsPane;
+	}
+	
+	public HighScorePane getHighScorePane() {
+		return highScorePane;
 	}
 
 	public void exit() {
