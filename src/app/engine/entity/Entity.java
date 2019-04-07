@@ -8,7 +8,7 @@ import app.engine.tiles.BaseTile;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
 
-public class Entity {
+public abstract class Entity {
 	DoublePosition pos;
 	BoundingBox bounds;
 	DoublePosition velocity = new DoublePosition(0d, 0d);
@@ -103,4 +103,6 @@ public class Entity {
 			   BaseTile.intersectsTile(tileX, tileY, right, down);
 	}
 	
+	
+	abstract public void onDeath();
 }
