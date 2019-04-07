@@ -1,7 +1,10 @@
 package app.engine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Emissive;
@@ -16,7 +19,7 @@ public class MapGenerator {
 
 	public MapGenerator() {
 	}
-	
+
 	public Map generate() {
 		Map map = new Map();
 		map.setTile(quickTile(Color.RED),-3,-3);
@@ -28,64 +31,107 @@ public class MapGenerator {
 			map.setTile(quickTile(), x, 4);
 		for(int x = -15; x<=20; x++)
 			map.setTile(quickTile(), x*2, -4);
-//		map.setTile(new BaseTile() {
-//			
-//			@Override
-//			public boolean isPassable() {
-//				return true;
-//			}
-//			
-//			@Override
-//			public boolean isOpaque() {
-//				return false;
-//			}
-//			
-//			@Override
-//			public IDrawable getDrawable() {
-//				return new BaseDrawable() {
-//				};
-//			}
-//			@Override
-//			public List<Emissive> getEmissives(final Position<Integer> tilePos) {
-//				List<Emissive> e = new ArrayList<>();
-//				e.add(new Emissive() {
-//					@Override
-//					public Position<Double> getSource() {
-//						return tilePos.dAdd(.5, .5);
-//					}
-//					@Override
-//					public Color getLightColor() {
-//						return Color.WHITE;
-//					}
-//					@Override
-//					public double lightBrightness() {
-//						return super.lightBrightness()/3;
-//					}
-//					@Override
-//					public double lightHeight() {
-//						return super.lightHeight()*3;
-//					}
-//				});
-//				return e;
-//			}
-//		}, -14, -14);
+
 		return map;
 	}
-	
+
+	public Map generate(int size) {
+		System.out.println("Generating map of size "+size);
+		int wallThickness = 1;
+		Random random = new Random( 0 ); //random seed configurable
+		BaseTile wall = quickTile();
+		BaseTile exit = quickTile(Color.GREEN);
+		System.out.println("Tiles for map aquired");
+
+		Map map = new Map();
+		int boundLeft = 0, boundRight = 0, boundUp = 0, boundDown = 0;
+		ArrayList<IntegerPosition> open = new ArrayList<>();
+		HashMap<IntegerPosition, Boolean> closed = new HashMap<>();
+		IntegerPosition last = new IntegerPosition(0, 0);
+		open.add(last);
+		IntegerPosition up, down, left, right;
+		ArrayList<IntegerPosition> tmp = new ArrayList<>();
+		ArrayList<IntegerPosition> justOpened = new ArrayList<>();
+		System.out.println("Generating....");
+		for(int i = 0; i<size; i++) {
+			System.out.println("  "+(i+1)+" of "+size);
+			int numOpen = open.size(); //changed inside loop
+			justOpened.clear();
+			for(int j = 0; j<numOpen; j++) {
+				IntegerPosition pos = open.get(random.nextInt(open.size())); //choose random pos
+				tmp.clear();
+				up =  pos.add( 0, -wallThickness);
+				down = pos.add( 0,  wallThickness);
+				left = pos.add(-wallThickness,  0);
+				right = pos.add( wallThickness,  0);
+
+				//add only open options
+				if( !closed.containsKey(up) )
+					tmp.add(up );
+				if( !closed.containsKey(down) )
+					tmp.add( down );
+				if( !closed.containsKey(left) )
+					tmp.add( left );
+				if( !closed.containsKey(right) && !open.contains(right))
+					tmp.add( right );
+
+				//if all options are exausted here mark this closed
+				if(tmp.size()==1) {
+					closed.put(pos, true);
+					open.remove(pos);
+				}else {
+
+					IntegerPosition choice = tmp.get(random.nextInt( tmp.size() )); //choose random option
+					int dx = (int) Math.signum(choice.getX()-pos.getX()), dy = (int) Math.signum(choice.getY()-pos.getY());
+
+					//close the path to the next open
+					for(int m = 1; m<=wallThickness; m++) {
+						closed.put(pos.add(dx*m, dy*m), true);
+					}
+					//mark last pos in path as open
+					justOpened.add(pos = pos.add(dx*(wallThickness+1), dy*(wallThickness+1)));
+					//update the map bounds
+					boundLeft = Math.min(boundLeft, pos.getX());
+					boundRight = Math.max(boundRight, pos.getX());
+					boundUp = Math.min(boundUp, pos.getY());
+					boundDown = Math.max(boundDown, pos.getY());
+				}
+			}
+			while(!justOpened.isEmpty())
+				open.add(justOpened.remove(justOpened.size()-1));
+		}
+		//remove remaining open to closed
+		while(!open.isEmpty()) {
+			closed.put(open.remove(open.size()-1), true);
+		}
+
+		System.out.println("Filling map data....");
+		IntegerPosition tmpPos = new IntegerPosition(0, 0);
+		for(int y = boundUp-1; y<=boundDown+1; y++) {
+			for(int x = boundLeft-1; x<=boundRight+1; x++) {
+				tmpPos.set(x, y);
+				if(closed.containsKey(tmpPos))
+					map.setTile(wall, x, y);
+			}
+		}
+		System.out.println("Map genration complete");
+		return map;
+	}
+
 	public BaseTile quickTile(Color color) {
 		return new BaseTile() {
-			
-			
+
+
 			@Override
 			public boolean isPassable() {
 				return true;
 			}
-			
+
 			@Override
 			public boolean isOpaque() {
 				return false;
 			}
-			
+
 			@Override
 			public IDrawable getDrawable() {
 				return new BaseDrawable() {
@@ -108,26 +154,26 @@ public class MapGenerator {
 			}
 		};
 	}
-		public BaseTile quickTile() {
-			return new BaseTile() {
-				
-				
-				@Override
-				public boolean isPassable() {
-					return false;
-				}
-				
-				@Override
-				public boolean isOpaque() {
-					return true;
-				}
-				
-				@Override
-				public IDrawable getDrawable() {
-					return new BaseDrawable() {
-					};
-				}
-				
-			};
+	public BaseTile quickTile() {
+		return new BaseTile() {
+
+
+			@Override
+			public boolean isPassable() {
+				return false;
+			}
+
+			@Override
+			public boolean isOpaque() {
+				return true;
+			}
+
+			@Override
+			public IDrawable getDrawable() {
+				return new BaseDrawable() {
+				};
+			}
+
+		};
 	}
 }

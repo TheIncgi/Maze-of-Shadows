@@ -31,7 +31,7 @@ public class MainMenu extends Scene {
 		
 		canvas = new MapCanvas(wid, hei);
 		MapGenerator mg = new MapGenerator();
-		canvas.setMap(mg.generate());
+		canvas.setMap(mg.generate(5));
 		
 		root = (Pane) getRoot();
 		

@@ -29,19 +29,15 @@ public class IntegerPosition {
 		this.y = y;
 	}
 	
-	public int getFloorX() {
-		return (int)Math.floor(x);
-	}
+
 	
-	@SuppressWarnings("unchecked")
+
 	public void addToSelf(IntegerPosition b) {
 		x += b.x;
 		y += b.y;
 	}
 	
-	public int getFloorY() {
-		return (int)Math.floor(y);
-	}
+
 	public DoublePosition add(double x, double y){
 		return new DoublePosition(this.x+x, this.y+y);
 	}
@@ -83,6 +79,6 @@ public class IntegerPosition {
 
 	@Override
 	public String toString() {
-		return String.format("DoublePosition (%.2f, %.2f) Hash: %d", x, y, hashCode());
+		return String.format("IntegerPos (%d, %d) Hash: %d", x, y, hashCode());
 	}
 }
