@@ -68,6 +68,14 @@ public class MainMenu extends Scene {
 			this.getChildren().addAll(newGame, options, howTo, highScore, about, exit);
 			this.setAlignment(Pos.CENTER);
 			
+			//TODO remove test code
+			setOnKeyPressed(e->{
+				if(e.getCode().equals(Game.instance().getSettings().getPauseKeycode())) {
+					
+					sliding.fromUp(Game.instance().getPausePane());
+				}
+			});
+			
 			options.setOnAction(e->{
 				SettingsPane p = Game.instance().getSettings();
 				p.setOnReturn(()->{sliding.fromLeft(buttonSet);});
