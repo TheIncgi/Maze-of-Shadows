@@ -1,5 +1,10 @@
 package app.ui.scenes;
 
-public class LevelView {
+import app.engine.Map;
 
+public class LevelView {
+	Map map;
+	public LevelView(
+			) {
+	}
 }
