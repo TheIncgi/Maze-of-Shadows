@@ -34,11 +34,11 @@ public class MapGenerator {
 
 		return map;
 	}
-
+	Long seed;
 	public Map generate(int size) {
 		System.out.println("Generating map of size "+size);
-		int wallThickness = 1;
-		Random random = new Random( 0 ); //random seed configurable
+		int wallThickness = 2; //corridor length
+		Random random = seed==null? new Random(seed) : new Random(); //random seed configurable
 		BaseTile wall = quickTile();
 		BaseTile exit = quickTile(Color.GREEN);
 		System.out.println("Tiles for map aquired");
@@ -47,39 +47,41 @@ public class MapGenerator {
 		int boundLeft = 0, boundRight = 0, boundUp = 0, boundDown = 0;
 		ArrayList<IntegerPosition> open = new ArrayList<>();
 		HashMap<IntegerPosition, Boolean> closed = new HashMap<>();
-		IntegerPosition last = new IntegerPosition(0, 0);
-		open.add(last);
+		IntegerPosition origin = new IntegerPosition(0, 0);
+		open.add(origin);
 		IntegerPosition up, down, left, right;
-		ArrayList<IntegerPosition> tmp = new ArrayList<>();
-		ArrayList<IntegerPosition> justOpened = new ArrayList<>();
+		ArrayList<IntegerPosition> tmp = new ArrayList<>(); //used to hold local options
+		//ArrayList<IntegerPosition> justOpened = new ArrayList<>();
 		System.out.println("Generating....");
 		for(int i = 0; i<size; i++) {
 			System.out.println("  "+(i+1)+" of "+size);
 			int numOpen = open.size(); //changed inside loop
-			justOpened.clear();
+			//justOpened.clear();
 			for(int j = 0; j<numOpen; j++) {
 				IntegerPosition pos = open.get(random.nextInt(open.size())); //choose random pos
 				tmp.clear();
-				up =  pos.add( 0, -wallThickness);
-				down = pos.add( 0,  wallThickness);
-				left = pos.add(-wallThickness,  0);
-				right = pos.add( wallThickness,  0);
+				up =  pos.add( 0, -(wallThickness+1));
+				down = pos.add( 0,  wallThickness+1);
+				left = pos.add(-(wallThickness+1),  0);
+				right = pos.add( wallThickness+1,  0);
 
 				//add only open options
 				if( !closed.containsKey(up) )
 					tmp.add(up );
-				if( !closed.containsKey(down) )
+				if( !closed.containsKey(down))
 					tmp.add( down );
-				if( !closed.containsKey(left) )
+				if( !closed.containsKey(left))
 					tmp.add( left );
-				if( !closed.containsKey(right) && !open.contains(right))
+				if( !closed.containsKey(right))
 					tmp.add( right );
 
-				//if all options are exausted here mark this closed
-				if(tmp.size()==1) {
-					closed.put(pos, true);
+				//no other tiles may branch to this one
+				closed.putIfAbsent(pos, true);
+				//if all options are exausted remove from list of branchingpoints
+				if(tmp.size()<=2) { //0 if closed from another path
 					open.remove(pos);
-				}else {
+				}
+				if(tmp.size() >= 2){
 
 					IntegerPosition choice = tmp.get(random.nextInt( tmp.size() )); //choose random option
 					int dx = (int) Math.signum(choice.getX()-pos.getX()), dy = (int) Math.signum(choice.getY()-pos.getY());
@@ -89,7 +91,7 @@ public class MapGenerator {
 						closed.put(pos.add(dx*m, dy*m), true);
 					}
 					//mark last pos in path as open
-					justOpened.add(pos = pos.add(dx*(wallThickness+1), dy*(wallThickness+1)));
+					open.add(pos = pos.add(dx*(wallThickness+1), dy*(wallThickness+1)));
 					//update the map bounds
 					boundLeft = Math.min(boundLeft, pos.getX());
 					boundRight = Math.max(boundRight, pos.getX());
@@ -97,27 +99,50 @@ public class MapGenerator {
 					boundDown = Math.max(boundDown, pos.getY());
 				}
 			}
-			while(!justOpened.isEmpty())
-				open.add(justOpened.remove(justOpened.size()-1));
+//			while(!justOpened.isEmpty())
+//				open.add(justOpened.remove(justOpened.size()-1));
 		}
 		//remove remaining open to closed
-		while(!open.isEmpty()) {
-			closed.put(open.remove(open.size()-1), true);
-		}
+//		while(!open.isEmpty()) {
+//			closed.put(open.remove(open.size()-1), true);
+//		}
 
 		System.out.println("Filling map data....");
 		IntegerPosition tmpPos = new IntegerPosition(0, 0);
 		for(int y = boundUp-1; y<=boundDown+1; y++) {
 			for(int x = boundLeft-1; x<=boundRight+1; x++) {
 				tmpPos.set(x, y);
-				if(closed.containsKey(tmpPos))
+				if(!closed.containsKey(tmpPos))
 					map.setTile(wall, x, y);
 			}
 		}
+		System.out.println("Adding origin light");
+		map.lightEmitters.add(new Emissive() {
+			DoublePosition pos = new DoublePosition(.5, .5);
+			@Override
+			public DoublePosition getSource() {
+				return pos;
+			}
+			@Override
+			public Color getLightColor() {
+				return super.getLightColor();
+			}
+			@Override
+			public double brightness() {
+				return 3;
+			}
+		});
 		System.out.println("Map genration complete");
 		return map;
 	}
 
+	public void setSeed(int seed ) {
+		setSeed(Long.valueOf(seed));
+	}
+	public void setSeed(Long seed) {
+		this.seed = seed;
+	}
+	
 	public BaseTile quickTile(Color color) {
 		return new BaseTile() {
 
