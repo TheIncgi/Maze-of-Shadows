@@ -2,11 +2,15 @@ package app.ui.elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
 import app.Game;
 import app.engine.Map;
+import app.engine.entity.BoundingBox;
+import app.engine.entity.Entity;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Lighting;
 import app.misc.DoublePosition;
@@ -31,6 +35,8 @@ public class MapCanvas extends Pane{
 	boolean smoothLighting = true;
 	GaussianBlur blur;
 	boolean debugLighting = true;
+
+	private LinkedList<Entity> entities = new LinkedList<>();
 
 
 	double scale = 32;
@@ -81,8 +87,7 @@ public class MapCanvas extends Pane{
 					//tile phase
 					int tileX = x-focus.getFloorX();
 					int tileY = y-focus.getFloorY();
-					if(tileX==0 && tileY==0)
-						tileX = tileX;
+
 					BaseTile t = map.getTile(x, y);
 					//System.out.printf("Drawing: <%d, %d> %s\n", tileX, tileY, t);
 
@@ -141,10 +146,45 @@ public class MapCanvas extends Pane{
 
 				}
 			}
+			synchronized (entities) {
+				BoundingBox box = new BoundingBox(leftTiles, -upTiles, -leftTiles, upTiles);
+				for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext();) {
+					Entity e = iterator.next();
+					DoublePosition pos = e.getPos();
+					double iw, ih;
+					iw = e.getDrawable().getImage().getWidth();
+					ih = e.getDrawable().getImage().getHeight();
+					
+					double tileX = pos.getX()-focus.getFloorX();
+					double tileY = pos.getY()-focus.getFloorY();
+					//System.out.printf("Drawing: <%d, %d> %s\n", tileX, tileY, t);
+
+					double px = (pos.getX()-focus.getX())*scale + halfWidth;
+					double py = (pos.getY()-focus.getY())*scale + halfHeight;
+					
+					e.getDrawable().draw(g, px, py, iw, ih);
+				}
+			}
 		}
-		snapshotFrames();
+		//snapshotFrames();
 	}
 
+	public void addEntity(Entity e) {
+		synchronized (entities) {
+			entities.add(e);
+		}
+	}
+	public void removeEntity(Entity e) {
+		synchronized (entities) {
+			entities.remove(e);
+		}
+	}
+	public void clearEntities() {
+		synchronized (entities) {
+			entities.clear();
+		}
+	}
+	
 	//debug tool
 	private void snapshotFrames() {
 		try {
@@ -167,7 +207,7 @@ public class MapCanvas extends Pane{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setSmoothLighting(boolean status) {
 		if(status==smoothLighting)return;
 		smoothLighting = status;

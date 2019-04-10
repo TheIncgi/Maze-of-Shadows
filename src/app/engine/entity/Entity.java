@@ -7,10 +7,14 @@ import app.engine.Engine;
 import app.engine.tiles.BaseTile;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
+import app.ui.elements.IDrawable;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 public abstract class Entity {
-	DoublePosition pos;
+	DoublePosition pos  = new DoublePosition(0, 0);
 	BoundingBox bounds;
+	BoundingBox visualBounds;
 	DoublePosition velocity = new DoublePosition(0d, 0d);
 	ArrayList<IntegerPosition> tileIntersections = new ArrayList<IntegerPosition>((int)((Math.ceil(bounds.getWidth())+1 )*(Math.ceil(bounds.getHeight())+1))); //used to track when an entity enters or exits tiles
 	
@@ -22,6 +26,9 @@ public abstract class Entity {
 		return intersectsTile(tilePos.getX(), tilePos.getY());
 	}
 	
+	public DoublePosition getPos() {
+		return pos;
+	}
 	
 	/**return speed in tiles per tick*/
 	public double getWalkingSpeed() {
@@ -103,6 +110,12 @@ public abstract class Entity {
 			   BaseTile.intersectsTile(tileX, tileY, right, down);
 	}
 	
+	abstract public IDrawable getDrawable();
+	
 	
 	abstract public void onDeath();
+
+
+	
+	
 }

@@ -8,28 +8,33 @@ import javax.sql.rowset.spi.SyncResolver;
 import app.engine.entity.Entity;
 import app.engine.entity.Player;
 import app.engine.entity.TickListener;
-import app.engine.entity.Ticking;
 import app.engine.tiles.BaseTile;
+import app.engine.tiles.Emissive;
 import app.misc.IntegerPosition;
+import app.ui.elements.BaseDrawable;
+import app.ui.elements.IDrawable;
 
 public class Engine {
 	
 	Map map;
-	private LinkedList<TickListener> tickListeners = new LinkedList<>();
+	private LinkedList<Entity> entities = new LinkedList<>();
 	//add and remove in a thread safe way, also allows for adding during tick event without concurrent mod ex
-	private LinkedList<TickListener> toAdd = new LinkedList<>(), toRemove = new LinkedList<>();
+	private LinkedList<Entity> toAdd = new LinkedList<>(), toRemove = new LinkedList<>();
 	//engine tick phases
 	//tile, entity movement, entity status
 	Thread engineThread;
 	volatile boolean running = false;
 	//skip ticks while loading a map so entities don't move through unloaded maps
-	volatile boolean freeze = false;
+	private volatile boolean freeze = false;
+	private boolean notifiedFrozen;
+	
 	public Engine() {
-		
 	}
 	
 	public void start() {
 		engineThread = new Thread(()-> {
+			Emissive.lightScale = 0;
+			freeze();
 			int tickDelay = (int) (1000/ticksPerSecond());
 			long now = System.currentTimeMillis();
 			long nextTick = now + tickDelay;
@@ -53,41 +58,79 @@ public class Engine {
 	}
 	
 	public void stop() {
-		engineThread.stop();
+		running = false;
 	}
 	
 	private void tick( long now ) {
-		if(freeze) return;
+		if(freeze) {
+			Emissive.lightScale = Math.max(0, Emissive.lightScale - 1/(ticksPerSecond()));
+			if(Emissive.lightScale == 0)
+				if(onFrozen!=null)
+					onFrozen.run();
+			return;
+		}else {
+			Emissive.lightScale = Math.min(1, Emissive.lightScale + 1/(ticksPerSecond()));
+		}
 		
-		synchronized(tickListeners) {
+		synchronized(entities) {
 			synchronized (toAdd) {
-				tickListeners.addAll( toAdd );
+				entities.addAll( toAdd );
 				toAdd.clear();
 			}
 			synchronized (toRemove) {
-				tickListeners.removeAll( toRemove );
+				entities.removeAll( toRemove );
 				toRemove.clear();
 			}
 		}
 		
-		for(TickListener t : tickListeners) {
-			t.onTick( now );
+		for(Entity t : entities) {
+			if(t instanceof TickListener)
+				((TickListener)t).onTick( now );
+		}
+		if (uiUpdate != null) {
+			uiUpdate.run();
 		}
 	}
 	
-	public void addTickListner(TickListener listener) {
+	public void setMap(Map map) {
+		this.map = map;
+	}
+	public Map getMap() {
+		return map;
+	}
+	
+	private Runnable onFrozen;
+	/**Set callback for when the game is done diming lights so next map can be loaded in the darkness*/
+	public void setOnFrozen( Runnable r ) {
+		this.onFrozen = r;
+	}
+	
+	private Runnable uiUpdate;
+	public void setUiUpdater(Runnable uiUpdate) {
+		this.uiUpdate = uiUpdate;
+	}
+	
+	public void freeze() {
+		notifiedFrozen = false;
+		freeze = true;
+	}
+	public void unfreeze() {
+		freeze = false;
+	}
+	
+	public void addTickListner(Entity listener) {
 		synchronized(toAdd) {
 			toAdd.add(listener);
 		}
 	}
-	public void removeTickListener(TickListener listener) {
+	public void removeTickListener(Entity listener) {
 		synchronized (toRemove) {
 			toRemove.add(listener);
 		}
 	}
 	public void clearTickListeners() {
 		synchronized (toRemove) {
-			toRemove.addAll(tickListeners);
+			toRemove.addAll(entities);
 		}
 	}
 	
