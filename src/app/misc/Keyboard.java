@@ -14,9 +14,11 @@ public class Keyboard {
 	private Keyboard() {}
 	
 	public static void onKeyPress(KeyEvent event) {
+		System.out.println("Key down: "+event.getCharacter());
 		heldKeys.put(event.getCode(), true);
 	}
 	public static void onKeyRelease(KeyEvent event) {
+		System.out.println("Key up: "+event.getCharacter());
 		heldKeys.remove(event.getCode());
 	}
 	

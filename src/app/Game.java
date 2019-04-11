@@ -1,6 +1,7 @@
 package app;
 
 import app.engine.Engine;
+import app.engine.Session;
 import app.ui.elements.CreditsPane;
 import app.ui.elements.HighScorePane;
 import app.ui.elements.HowToPlayPane;
@@ -11,7 +12,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
+import javafx.stage.WindowEvent;
 import resources.R;
 
 public class Game extends Application{
@@ -40,6 +41,7 @@ public class Game extends Application{
 	private Stage stage;
 	private PausePane pausePane;
 	private MainMenu mainMenu;
+
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
@@ -56,12 +58,15 @@ public class Game extends Application{
 		
 		stage.setResizable( false );
 		
-	
+		stage.setOnCloseRequest(this::onClose);
 		
 		stage.show();
 	}
 	
 	
+	public void onClose(WindowEvent event) {
+		engine.stop();
+	}
 	
 	public static Game instance() {
 		return instance;
@@ -69,6 +74,7 @@ public class Game extends Application{
 	public Engine getEngine() {
 		return engine;
 	}
+	
 	
 	public SettingsPane getSettings() {
 		return settings;

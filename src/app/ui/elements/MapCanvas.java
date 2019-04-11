@@ -24,6 +24,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -58,6 +59,10 @@ public class MapCanvas extends Pane{
 			int tx = (int)Math.floor(tileX);
 			int ty = (int)Math.floor(tileY);
 			System.out.printf("Click <%d, %d> %s %s\n", tx, ty, map.getTile(tx, ty), map.getLight(tx, ty));
+			if(e.getButton().equals(MouseButton.SECONDARY)) {
+				System.out.println("Snapshot!");
+				snapshotFrames();
+			}
 		});
 	}
 
@@ -69,6 +74,7 @@ public class MapCanvas extends Pane{
 		GraphicsContext g = tiles.getGraphicsContext2D();
 		GraphicsContext l = lighting.getGraphicsContext2D();
 		g.clearRect(0, 0, tiles.getWidth(), tiles.getHeight());
+		l.clearRect(0, 0, lighting.getWidth(), lighting.getHeight());
 		l.setFill(Color.BLACK);
 		l.fillRect(0, 0, lighting.getWidth(), lighting.getHeight());
 		Image defaultFloor = Game.instance().genericFloor;
@@ -76,6 +82,7 @@ public class MapCanvas extends Pane{
 			g.setFill(Color.BLACK);
 			g.fillRect(0, 0, tiles.getWidth(), tiles.getHeight());
 		}else {
+			map.calculateLighting();
 			double halfHeight = tiles.getHeight()/2;
 			double halfWidth  = tiles.getWidth()/2;
 			int upTiles = (int) Math.ceil(halfHeight / scale) +1;

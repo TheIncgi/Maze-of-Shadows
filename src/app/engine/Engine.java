@@ -63,7 +63,7 @@ public class Engine {
 	
 	private void tick( long now ) {
 		if(freeze) {
-			Emissive.lightScale = Math.max(0, Emissive.lightScale - 1/(ticksPerSecond()));
+			Emissive.lightScale = Math.max(0, Emissive.lightScale - 1/(ticksPerSecond())); //FIXME doesn't seem to animate well...
 			if(Emissive.lightScale == 0)
 				if(onFrozen!=null && !notifiedFrozen) {
 					notifiedFrozen = true;
@@ -89,9 +89,11 @@ public class Engine {
 			if(t instanceof TickListener)
 				((TickListener)t).onTick( now );
 		}
-		if (uiUpdate != null) {
-			uiUpdate.run();
-		}
+		
+	}
+	
+	public boolean isRunning() {
+		return running;
 	}
 	
 	public void setMap(Map map) {
@@ -107,10 +109,7 @@ public class Engine {
 		this.onFrozen = r;
 	}
 	
-	private Runnable uiUpdate;
-	public void setUiUpdater(Runnable uiUpdate) {
-		this.uiUpdate = uiUpdate;
-	}
+	
 	
 	public void freeze() {
 		System.out.println("Freezing");
@@ -143,7 +142,7 @@ public class Engine {
 		return nTiles/Engine.ticksPerSecond();
 	}
 	public static double ticksPerSecond() {
-		return 10;
+		return 30;
 	}
 	
 	public void enterTile(Entity entity, IntegerPosition tilePos) {

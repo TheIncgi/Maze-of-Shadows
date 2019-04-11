@@ -11,7 +11,7 @@ import app.ui.elements.IDrawable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public abstract class Entity {
+public abstract class Entity implements TickListener {
 	DoublePosition pos  = new DoublePosition(0, 0);
 	BoundingBox bounds = new BoundingBox(0, 0, 1, 1);
 	BoundingBox visualBounds;
@@ -39,9 +39,6 @@ public abstract class Entity {
 		return getWalkingSpeed()*1.75;
 	}
 	
-	/**Called each game tick<br>
-	 * Entity logic should go here*/
-	public void onTick() {}
 	
 	/**
 	 * Called each game tick to update the entity's position
@@ -65,10 +62,11 @@ public abstract class Entity {
 		return false;
 	}
 	/**
-	 * Use entities walking speed to travel in some direction
+	 * Use entities walking speed to travel in some direction\
+	 * Angle is in radians
 	 * */
 	public void walk(double angle) {
-		angle = Math.toRadians(angle);
+//		angle = Math.toRadians(angle);
 		double s = getWalkingSpeed();
 		velocity.set(s*Math.cos(angle), s*Math.sin(angle));
 	}

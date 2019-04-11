@@ -27,13 +27,14 @@ public class Map {
 
 	//Made this to calculate
 	//https://www.desmos.com/calculator/ld2gzlwiyi
-	public void calculateLighting(Emissive playerEmissive) {
+	public void calculateLighting(/*Emissive playerEmissive*/) {
+		lighting.clear();
 		for (int i = 0; i < lightEmitters.size(); i++) {
 			Emissive e = lightEmitters.get(i);
 			solveLightForEmissive(e);
 		}
-		if(playerEmissive!=null)
-			solveLightForEmissive(playerEmissive);
+//		if(playerEmissive!=null)
+//			solveLightForEmissive(playerEmissive);
 	}
 	
 	private void solveLightForEmissive(Emissive e) {

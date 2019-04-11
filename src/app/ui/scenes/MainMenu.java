@@ -47,7 +47,7 @@ public class MainMenu extends Scene {
 		sliding.setCurrent(buttonSet);
 		
 		
-		canvas.getMap().calculateLighting(null);
+		
 		canvas.draw();
 		
 		

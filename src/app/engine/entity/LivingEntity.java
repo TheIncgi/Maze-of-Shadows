@@ -33,4 +33,8 @@ public class LivingEntity extends Entity {
 	public IDrawable getDrawable() {
 		return null;
 	}
+
+	@Override
+	public void onTick(long now) {
+	}
 }
