@@ -38,7 +38,7 @@ public class MapGenerator {
 	public Map generate(int size) {
 		System.out.println("Generating map of size "+size);
 		int wallThickness = 2; //corridor length
-		Random random = seed==null? new Random(seed) : new Random(); //random seed configurable
+		Random random = seed!=null? new Random(seed) : new Random(); //random seed configurable
 		BaseTile wall = quickTile();
 		BaseTile exit = quickTile(Color.GREEN);
 		System.out.println("Tiles for map aquired");

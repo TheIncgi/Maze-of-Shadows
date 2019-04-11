@@ -1,5 +1,7 @@
 package app.engine.entity;
 
+import app.ui.elements.IDrawable;
+
 public class LivingEntity extends Entity {
 	int health;
 	int maxHealth;
@@ -26,4 +28,9 @@ public class LivingEntity extends Entity {
 	
 	
 	public void onDeath() {}
+
+	@Override
+	public IDrawable getDrawable() {
+		return null;
+	}
 }

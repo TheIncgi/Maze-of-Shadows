@@ -49,7 +49,7 @@ public class Game extends Application{
 		howToPlayPane = new HowToPlayPane();
 		pausePane = new PausePane();
 		genericFloor = new Image(R.class.getResourceAsStream("generic_floor_whiter.png"));
-		Scene scene = mainMenu = new MainMenu(SIZE, SIZE);
+		Scene scene = mainMenu = new MainMenu(stage, SIZE, SIZE);
 		stage.setScene(scene);
 		
 		stage.setTitle(TITLE);

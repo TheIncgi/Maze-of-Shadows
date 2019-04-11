@@ -49,8 +49,8 @@ public class Engine {
 						running = false;
 						throw new RuntimeException("Sleep has been interupted by another thread");
 					}
-				else if( (now - nextTick)/tickDelay > 500 )
-					throw new RuntimeException("The system is too running slow! Fell 500+ game ticks behind schedule!");
+//				else if( (now - nextTick)/tickDelay > 500 )
+//					throw new RuntimeException("The system is too running slow! Fell 500+ game ticks behind schedule!");
 			}
 		}, "Engine Thread"); 
 		running = true;
@@ -65,8 +65,10 @@ public class Engine {
 		if(freeze) {
 			Emissive.lightScale = Math.max(0, Emissive.lightScale - 1/(ticksPerSecond()));
 			if(Emissive.lightScale == 0)
-				if(onFrozen!=null)
+				if(onFrozen!=null && !notifiedFrozen) {
+					notifiedFrozen = true;
 					onFrozen.run();
+				}
 			return;
 		}else {
 			Emissive.lightScale = Math.min(1, Emissive.lightScale + 1/(ticksPerSecond()));
@@ -111,24 +113,26 @@ public class Engine {
 	}
 	
 	public void freeze() {
+		System.out.println("Freezing");
 		notifiedFrozen = false;
 		freeze = true;
 	}
 	public void unfreeze() {
+		System.out.println("Unfreezing");
 		freeze = false;
 	}
 	
-	public void addTickListner(Entity listener) {
+	public void addEntity(Entity listener) {
 		synchronized(toAdd) {
 			toAdd.add(listener);
 		}
 	}
-	public void removeTickListener(Entity listener) {
+	public void removeEntity(Entity listener) {
 		synchronized (toRemove) {
 			toRemove.add(listener);
 		}
 	}
-	public void clearTickListeners() {
+	public void clearEntities() {
 		synchronized (toRemove) {
 			toRemove.addAll(entities);
 		}

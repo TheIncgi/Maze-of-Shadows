@@ -7,6 +7,7 @@ import app.engine.MapGenerator;
 import app.engine.entity.Player;
 import app.ui.elements.MapCanvas;
 import app.ui.elements.PausePane;
+import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 
@@ -20,18 +21,23 @@ public class LevelView extends Scene{
 	public LevelView() {
 		super(new Pane(), Game.SIZE, Game.SIZE);
 		root = (Pane) getRoot();
+
 		mapCanvas = new MapCanvas(Game.SIZE, Game.SIZE);
 		engine = new Engine();
 		engine.setUiUpdater( mapCanvas::draw );
 		engine.setOnFrozen( this::loadLevel );
 		Player player = new Player(5);
+		mapCanvas.draw();
+		engine.addEntity( player );
 		
-		engine.addTickListner( player );
-		mapCanvas.
+		root.getChildren().add(mapCanvas);
+		engine.start();
+		engine.unfreeze();
 	}
 	
 	public void loadLevel() {
-		engine.setMap(generator.generate());
+		engine.setMap(generator.generate( 50 ));
 		mapCanvas.setMap(engine.getMap());
+		engine.unfreeze();
 	}
 }

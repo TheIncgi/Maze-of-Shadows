@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 
 public abstract class Entity {
 	DoublePosition pos  = new DoublePosition(0, 0);
-	BoundingBox bounds;
+	BoundingBox bounds = new BoundingBox(0, 0, 1, 1);
 	BoundingBox visualBounds;
 	DoublePosition velocity = new DoublePosition(0d, 0d);
 	ArrayList<IntegerPosition> tileIntersections = new ArrayList<IntegerPosition>((int)((Math.ceil(bounds.getWidth())+1 )*(Math.ceil(bounds.getHeight())+1))); //used to track when an entity enters or exits tiles

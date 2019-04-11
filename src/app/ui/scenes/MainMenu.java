@@ -18,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 public class MainMenu extends Scene {
 	
@@ -25,14 +26,14 @@ public class MainMenu extends Scene {
 	MapCanvas canvas;
 	MainMenuOptions buttonSet;
 	SlidingPane sliding;
-
-	public MainMenu(double wid, double hei) {
+	Stage stage;
+	public MainMenu(Stage stage, double wid, double hei) {
 		super(new Pane(), wid, hei, Color.TRANSPARENT);
-		
+		this.stage = stage;
 		canvas = new MapCanvas(wid, hei);
 		MapGenerator mg = new MapGenerator();
 		mg.setSeed( 0 );
-		canvas.setMap(mg.generate(500));
+		canvas.setMap(mg.generate(20));
 		
 		root = (Pane) getRoot();
 		
@@ -76,6 +77,9 @@ public class MainMenu extends Scene {
 				}
 			});
 			
+			newGame.setOnAction(e->{
+				stage.setScene(new LevelView());
+			});
 			options.setOnAction(e->{
 				SettingsPane p = Game.instance().getSettings();
 				p.setOnReturn(()->{sliding.fromLeft(buttonSet);});
