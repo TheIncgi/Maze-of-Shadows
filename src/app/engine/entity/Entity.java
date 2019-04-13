@@ -32,7 +32,7 @@ public abstract class Entity implements TickListener {
 	
 	/**return speed in tiles per tick*/
 	public double getWalkingSpeed() {
-		return Engine.tilesPerSecond(2); //walk 2 tiles per second
+		return Engine.tilesPerSecond(4); //walk 2 tiles per second
 	}
 	/**returns sprinting speed in tiles per tick*/
 	public double getSprintingSpeed() {

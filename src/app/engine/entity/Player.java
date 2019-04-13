@@ -86,7 +86,7 @@ public class Player extends LivingEntity {
 		}
 		@Override
 		public DoublePosition getSource() {
-			return playerPos;
+			return playerPos.add(.5, .5);
 		}
 		@Override
 		public double flickerAmount() {

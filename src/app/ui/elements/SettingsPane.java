@@ -41,7 +41,7 @@ public class SettingsPane extends BorderPane{
 	private Keybinding up 	   = new Keybinding(KeyCode.W);
 	private Keybinding left    = new Keybinding(KeyCode.A);
 	private Keybinding right   = new Keybinding(KeyCode.D);
-	private Keybinding down    = new Keybinding(KeyCode.DOWN);
+	private Keybinding down    = new Keybinding(KeyCode.S);
 	private Keybinding pauseKey= new Keybinding(KeyCode.P);
 	
 

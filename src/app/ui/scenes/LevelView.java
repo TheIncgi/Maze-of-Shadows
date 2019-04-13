@@ -19,17 +19,17 @@ public class LevelView extends Scene{
 	Pane root;
 	MapCanvas mapCanvas;
 	AnimationTimer timer = new AnimationTimer() {
-		long next = System.nanoTime();
-		long millisPerNano = 1000000;
+		//long next = System.nanoTime();
+		//long millisPerNano = 1000000;
 		@Override
 		public void handle(long now) {
 			if(!engine.isRunning()) {
 				this.stop();
 			}else {
-				if(next <= now) {
+				//if(next <= now) {
 					mapCanvas.draw();
-					next = now + millisPerNano * 1000/30;
-				}
+				//	next = now + millisPerNano * 1000/60;
+				//}
 			}
 		}
 	};
