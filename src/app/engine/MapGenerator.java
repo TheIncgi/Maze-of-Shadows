@@ -132,6 +132,10 @@ public class MapGenerator {
 				return 3;
 			}
 		});
+		map.leftBound = boundLeft;
+		map.rightBound = boundRight;
+		map.upperBound = boundUp;
+		map.lowerBound = boundDown;
 		System.out.println("Map genration complete");
 		return map;
 	}

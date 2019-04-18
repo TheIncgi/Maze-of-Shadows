@@ -13,7 +13,8 @@ import app.engine.tiles.Lighting;
 import app.misc.IntegerPosition;
 
 public class Map {
-
+	/**Upper is -y*/
+	private int leftBound, rightBound, upperBound, lowerBound;
 	HashMap<IntegerPosition, BaseTile> tiles = new HashMap<>(1024);
 	HashMap<IntegerPosition, Lighting> lighting = new HashMap<>(1024);
 	ArrayList<Emissive> lightEmitters = new ArrayList<>();
@@ -126,4 +127,46 @@ public class Map {
 	public boolean usesLighting(IntegerPosition pos) {
 		return getTile(pos) == null || !getTile(pos).isOpaque();
 	}
+
+
+	public int getLeftBound() {
+		return leftBound;
+	}
+
+
+	public void setLeftBound(int leftBound) {
+		this.leftBound = leftBound;
+	}
+
+
+	public int getRightBound() {
+		return rightBound;
+	}
+
+
+	public void setRightBound(int rightBound) {
+		this.rightBound = rightBound;
+	}
+
+
+	public int getUpperBound() {
+		return upperBound;
+	}
+
+
+	public void setUpperBound(int upperBound) {
+		this.upperBound = upperBound;
+	}
+
+
+	public int getLowerBound() {
+		return lowerBound;
+	}
+
+
+	public void setLowerBound(int lowerBound) {
+		this.lowerBound = lowerBound;
+	}
+	
+	
 }
