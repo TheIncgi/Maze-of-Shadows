@@ -8,6 +8,7 @@ import app.ui.elements.CreditsPane;
 import app.ui.elements.HighScorePane;
 import app.ui.elements.HowToPlayPane;
 import app.ui.elements.MapCanvas;
+import app.ui.elements.MapPane;
 import app.ui.elements.SettingsPane;
 import app.ui.elements.SlidingPane;
 import javafx.geometry.Pos;
@@ -23,17 +24,20 @@ import javafx.stage.Stage;
 public class MainMenu extends Scene {
 	
 	Pane root;
-	MapCanvas canvas;
+	//MapCanvas canvas;
+	MapPane mapView;
 	MainMenuOptions buttonSet;
 	SlidingPane sliding;
 	Stage stage;
 	public MainMenu(Stage stage, double wid, double hei) {
 		super(new Pane(), wid, hei, Color.TRANSPARENT);
 		this.stage = stage;
-		canvas = new MapCanvas(wid, hei);
+		//canvas = new MapCanvas(wid, hei);
+		mapView = new MapPane();
 		MapGenerator mg = new MapGenerator();
 		mg.setSeed( 0 );
-		canvas.setMap(mg.generate(20));
+		//canvas.setMap(mg.generate(20));
+		mapView.setMap(mg.generate(40));
 		
 		root = (Pane) getRoot();
 		
@@ -42,13 +46,13 @@ public class MainMenu extends Scene {
 		buttonSet = new MainMenuOptions();
 		buttonSet.layoutXProperty().bind(widthProperty().divide(2).subtract(buttonSet.widthProperty().divide(2)));
 		buttonSet.layoutYProperty().bind(heightProperty().divide(2).subtract(buttonSet.heightProperty().divide(2)));
-		root.getChildren().addAll(canvas, sliding);
+		root.getChildren().addAll(mapView, sliding);
 		
 		sliding.setCurrent(buttonSet);
 		
 		
 		
-		canvas.draw();
+		//canvas.draw();
 		
 		
 	}

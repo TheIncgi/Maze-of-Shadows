@@ -38,6 +38,10 @@ public class MapGenerator {
 	public Map generate(int size) {
 		System.out.println("Generating map of size "+size);
 		int wallThickness = 2; //corridor length
+		int corridorThickness = 2;// must be <= to wall thickness
+		
+		
+		corridorThickness--;
 		Random random = seed!=null? new Random(seed) : new Random(); //random seed configurable
 		BaseTile wall = quickTile();
 		BaseTile exit = quickTile(Color.GREEN);
@@ -107,15 +111,32 @@ public class MapGenerator {
 //			closed.put(open.remove(open.size()-1), true);
 //		}
 
+		IntegerPosition tmpPos = new IntegerPosition(0, 0), tmp2;  //FIXME this code removes extra tiles to make the halways wider, needs fixing
+		for(int i = 0; i<corridorThickness; i++) {
+			for(int y = boundUp-1; y<=boundDown+1; y++) {
+				for(int x = boundLeft-1; x<=boundRight+1; x++) {
+					tmpPos.set(x, y);
+					if(!closed.containsKey(tmpPos)) continue; //closed is part of the path
+					
+					tmp2 = tmpPos.add(0, -1);
+					if(closed.containsKey(tmp2))
+						closed.put(tmp2, true);
+					tmp2 = tmpPos.add(-1, 0);
+					if(closed.containsKey(tmp2))
+						closed.put(tmp2, true);
+				}
+			}
+		}
+		
 		System.out.println("Filling map data....");
-		IntegerPosition tmpPos = new IntegerPosition(0, 0);
-		for(int y = boundUp-1; y<=boundDown+1; y++) {
-			for(int x = boundLeft-1; x<=boundRight+1; x++) {
+		for(int y = boundUp-1; y<=boundDown+1+corridorThickness; y++) {
+			for(int x = boundLeft-1; x<=boundRight+1+corridorThickness; x++) {
 				tmpPos.set(x, y);
 				if(!closed.containsKey(tmpPos))
 					map.setTile(wall, x, y);
 			}
 		}
+		
 		System.out.println("Adding origin light");
 		map.lightEmitters.add(new Emissive() {
 			DoublePosition pos = new DoublePosition(.5, .5);
@@ -132,10 +153,10 @@ public class MapGenerator {
 				return 3;
 			}
 		});
-		map.leftBound = boundLeft;
-		map.rightBound = boundRight;
-		map.upperBound = boundUp;
-		map.lowerBound = boundDown;
+		map.setLeftBound(boundLeft);
+		map.setRightBound(boundRight);
+		map.setUpperBound(boundUp);
+		map.setLowerBound(boundDown);
 		System.out.println("Map genration complete");
 		return map;
 	}
