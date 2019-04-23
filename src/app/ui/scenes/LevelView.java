@@ -7,6 +7,7 @@ import app.engine.MapGenerator;
 import app.engine.entity.Player;
 import app.misc.Keyboard;
 import app.ui.elements.MapCanvas;
+import app.ui.elements.MapPane;
 import app.ui.elements.PausePane;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
@@ -17,7 +18,8 @@ public class LevelView extends Scene{
 	Engine engine;
 	PausePane pauseOverlay = Game.instance().getPausePane();
 	Pane root;
-	MapCanvas mapCanvas;
+	//MapCanvas mapCanvas;
+	MapPane mapPane;
 	AnimationTimer timer = new AnimationTimer() {
 		//long next = System.nanoTime();
 		//long millisPerNano = 1000000;
@@ -27,9 +29,10 @@ public class LevelView extends Scene{
 				this.stop();
 			}else {
 				//if(next <= now) {
-					mapCanvas.draw();
+//					mapCanvas.draw();
 				//	next = now + millisPerNano * 1000/60;
 				//}
+				mapPane.update();
 			}
 		}
 	};
@@ -41,24 +44,29 @@ public class LevelView extends Scene{
 		setOnKeyPressed(Keyboard::onKeyPress);
 		setOnKeyReleased(Keyboard::onKeyRelease);
 
-		mapCanvas = new MapCanvas(Game.SIZE, Game.SIZE);
+		//mapCanvas = new MapCanvas(Game.SIZE, Game.SIZE);
+		mapPane = new MapPane() 
+		{public void onLoaded() {
+			engine.unfreeze();
+			timer.start();
+		};};
 		engine = Game.instance().getEngine();
 		
 		engine.setOnFrozen( this::loadLevel );
 		Player player = new Player(5);
 		engine.addEntity( player );
-		mapCanvas.addEntity( player );
-		mapCanvas.setFocus( player.getPos() );
+		mapPane.addEntity( player );
+		mapPane.setFocus( player.getPos() );
 		
-		root.getChildren().add(mapCanvas);
+		root.getChildren().add(mapPane);
 		engine.start();
-		engine.unfreeze();
-		timer.start();
+		
+		
 	}
 	
 	public void loadLevel() {
-		engine.setMap(generator.generate( 100 ));
-		mapCanvas.setMap(engine.getMap());
+		engine.setMap(generator.generate( 40 ));
+		mapPane.setMap(engine.getMap());
 		engine.unfreeze();
 	}
 }

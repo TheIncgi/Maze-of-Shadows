@@ -37,7 +37,7 @@ public class MainMenu extends Scene {
 		MapGenerator mg = new MapGenerator();
 		mg.setSeed( 0 );
 		//canvas.setMap(mg.generate(20));
-		mapView.setMap(mg.generate(40));
+		mapView.setMap(mg.generate(5));
 		
 		root = (Pane) getRoot();
 		

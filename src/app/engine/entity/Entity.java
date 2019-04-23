@@ -19,8 +19,8 @@ public abstract class Entity implements TickListener {
 	ArrayList<IntegerPosition> tileIntersections = new ArrayList<IntegerPosition>((int)((Math.ceil(bounds.getWidth())+1 )*(Math.ceil(bounds.getHeight())+1))); //used to track when an entity enters or exits tiles
 	
 	/**Measured in tiles per game tick*/
-	public static final double MAX_ENTITY_SPEED = .95;
-	public static final double baseSpeed = 1;
+	public static final double MAX_ENTITY_SPEED = 200;
+	public static final double baseSpeed = 100;
 	
 	public boolean intersectsTile(IntegerPosition tilePos) {
 		return intersectsTile(tilePos.getX(), tilePos.getY());
@@ -32,7 +32,7 @@ public abstract class Entity implements TickListener {
 	
 	/**return speed in tiles per tick*/
 	public double getWalkingSpeed() {
-		return Engine.tilesPerSecond(4); //walk 2 tiles per second
+		return Engine.tilesPerSecond(baseSpeed); //walk 2 tiles per second
 	}
 	/**returns sprinting speed in tiles per tick*/
 	public double getSprintingSpeed() {
