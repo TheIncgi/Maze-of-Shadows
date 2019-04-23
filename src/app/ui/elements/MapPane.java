@@ -119,6 +119,7 @@ public class MapPane extends Pane{
 //					r.setFill(Color.WHITE);
 				}
 				Rectangle r = new Rectangle(light.width, light.height);
+				
 				r.setBlendMode(BlendMode.MULTIPLY);
 				light.addTile(pos,  r);
 			}

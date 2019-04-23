@@ -55,7 +55,9 @@ public class Player extends LivingEntity {
 		return inventory;
 	}
 	
-	public void addItemToInventory(BaseItem item) {}
+	public void addItemToInventory(BaseItem item) {
+		//TODO
+	}
 	
 	public int getGold() {
 		return gold;
