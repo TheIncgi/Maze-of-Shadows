@@ -6,6 +6,7 @@ import app.engine.Map;
 import app.engine.MapGenerator;
 import app.engine.entity.Player;
 import app.misc.Keyboard;
+import app.ui.elements.GameHUD;
 import app.ui.elements.MapCanvas;
 import app.ui.elements.MapPane;
 import app.ui.elements.PausePane;
@@ -20,6 +21,8 @@ public class LevelView extends Scene{
 	Pane root;
 	//MapCanvas mapCanvas;
 	MapPane mapPane;
+	GameHUD hud;
+	
 	AnimationTimer timer = new AnimationTimer() {
 		//long next = System.nanoTime();
 		//long millisPerNano = 1000000;
@@ -39,6 +42,7 @@ public class LevelView extends Scene{
 	
 	public LevelView() {
 		super(new Pane(), Game.SIZE, Game.SIZE);
+		Game.instance().setLevelView(this);
 		root = (Pane) getRoot();
 		
 		setOnKeyPressed(Keyboard::onKeyPress);
@@ -58,15 +62,23 @@ public class LevelView extends Scene{
 		mapPane.addEntity( player );
 		mapPane.setFocus( player.getPos() );
 		
-		root.getChildren().add(mapPane);
+		root.getChildren().addAll(mapPane, hud = Game.instance().getGameHud());
+		
+		hud.healthBar.progressProperty().bind( player.healthProperty().divide(player.maxHealthProperty() ));
+		hud.staminaBar.progressProperty().bind( player.staminaProperty().divide(player.getMaxStamina()) );
+		
 		engine.start();
 		
 		
 	}
 	
 	public void loadLevel() {
-		engine.setMap(generator.generate( 40 ));
+		engine.setMap(generator.generate( 20 )); //TODO set up to 40
 		mapPane.setMap(engine.getMap());
 		engine.unfreeze();
+	}
+	
+	public MapPane getMapPane() {
+		return mapPane;
 	}
 }

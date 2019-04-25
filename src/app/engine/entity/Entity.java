@@ -1,19 +1,26 @@
 package app.engine.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import app.Game;
 import app.engine.Engine;
+import app.engine.items.BaseItem;
 import app.engine.tiles.BaseTile;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
+import app.ui.elements.GameHUD;
 import app.ui.elements.IDrawable;
+import app.ui.elements.MapPane;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public abstract class Entity implements TickListener {
-	DoublePosition pos  = new DoublePosition(0, 0);
+	DoublePosition pos  = new DoublePosition(0,0);
 	BoundingBox bounds = new BoundingBox(0, 0, 1, 1);
+	IntegerPosition lastTilePos = null;
 	BoundingBox visualBounds;
 	DoublePosition velocity = new DoublePosition(0d, 0d);
 	ArrayList<IntegerPosition> tileIntersections = new ArrayList<IntegerPosition>((int)((Math.ceil(bounds.getWidth())+1 )*(Math.ceil(bounds.getHeight())+1))); //used to track when an entity enters or exits tiles
@@ -44,22 +51,59 @@ public abstract class Entity implements TickListener {
 	 * Called each game tick to update the entity's position
 	 * */
 	public final void doMovement() {
-		pos.addToSelf(velocity);
-		tileCheck();
+		MapPane mapView = Game.instance().getLevelView().getMapPane();
+		double movementScale = mapView.pixelsPerTile();
+		
+
+		double x =  (pos.getFloorX() / movementScale) - 3;
+		double y =  (pos.getFloorY() / movementScale) - 3;
+		BaseTile current = Game.instance().getEngine().getMap().getTile((int)x, (int)y);
+		double nextX = Math.floor(x + velocity.getX()/movementScale);
+		double nextY = (int) Math.floor(y +velocity.getY()/movementScale );
+		BaseTile next = Game.instance().getEngine().getMap().getTile( (int)nextX, (int)nextY );
+		
+		
+		
+		
+		if( next == null || next.isPassable() )
+			pos.addToSelf(velocity);	
+		
+		{//debug chunk
+			GameHUD hud = Game.instance().getGameHud();
+			hud.debug1.setFill( current == null ? Color.GREEN : Color.RED );
+			hud.debug2.setFill( current != null && current.isPassable() ? Color.GREEN : Color.RED );
+			
+			hud.debug3.setFill( next == null ? Color.GREEN : Color.RED );
+			hud.debug4.setFill( next != null && next.isPassable() ? Color.GREEN : Color.RED );
+			
+			Platform.runLater(()->{
+				hud.debugText.setText(String.format("Current: <%6.2f, %6.2f>,  Next: <%6.2f, %6.2f>", x, y, 
+						 nextX, nextY));
+			});
+		}
+		
+//		if(lastTilePos == null || !lastTilePos.equals(nextTilePos) && (next == null || next.isPassable())) {
+//			if(lastTilePos!=null)
+//				exitedTile(lastTilePos);
+//			if(nextTilePos!=null)
+//				enteredTile(nextTilePos);
+//			lastTilePos = nextTilePos;
+//		}
+		
+		//tileCheck();
 	}
 	
-	/**
-	 * Check if the entity has entered or exited any tiles
-	 * */
-	protected void tileCheck() {
-		tileIntersections.removeIf(tile->(exitedTile(tile)));
+//	/**
+//	 * Check if the entity has entered or exited any tiles
+//	 * */
+//	protected void tileCheck() {
+//		tileIntersections.removeIf(tile->(exitedTile(tile)));
+//	}
+	private void enteredTile(IntegerPosition tile) {
+		Game.instance().getEngine().enterTile(this, tile);
 	}
-	private boolean exitedTile(IntegerPosition tile) {
-		if(intersectsTile(tile.getX(), tile.getY())) {
-			Game.instance().getEngine().exitTile(this, tile);
-			return true;
-		}
-		return false;
+	private void exitedTile(IntegerPosition tile) {
+		Game.instance().getEngine().exitTile(this, tile);
 	}
 	/**
 	 * Use entities walking speed to travel in some direction\
@@ -74,7 +118,6 @@ public abstract class Entity implements TickListener {
 	 * Use entities sprinting speed to travel in some direction
 	 * */
 	public void sprint(double angle) {
-		angle = Math.toRadians(angle);
 		double s = getSprintingSpeed();
 		velocity.set(s*Math.cos(angle), s*Math.sin(angle));
 	}

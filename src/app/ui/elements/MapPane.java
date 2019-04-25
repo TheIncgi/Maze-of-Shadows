@@ -31,11 +31,13 @@ import jdk.internal.dynalink.support.Guards;
 
 public class MapPane extends Pane{
 	Map map;
-	int tilesOnScreen = 10;
+	int tilesOnScreen = 6;
 	TilePane tiles = new TilePane();
 	TilePane light = new TilePane();
 	DoublePosition focus;
 	WeakHashMap<Entity, ImageView> entityViews = new WeakHashMap<>();
+	
+	
 
 	public MapPane() {
 		this.getChildren().addAll(tiles);
@@ -71,8 +73,8 @@ public class MapPane extends Pane{
 
 		for (Entity entity : entitites) {
 			ImageView ev = entityViews.get(entity);
-			ev.translateXProperty().set(entity.getPos().getX());
-			ev.translateYProperty().set(entity.getPos().getY());
+			ev.translateXProperty().set(entity.getPos().getX() - ev.getFitWidth()/2);
+			ev.translateYProperty().set(entity.getPos().getY() - ev.getFitHeight()/2);
 		}
 
 		synchronized (light) {
@@ -128,6 +130,8 @@ public class MapPane extends Pane{
 		onLoaded();
 	}
 	
+	
+	
 	public void onLoaded() {}
 
 	static final GaussianBlur blur = new GaussianBlur(10);
@@ -143,6 +147,9 @@ public class MapPane extends Pane{
 			t.setTranslateZ(z);
 			t.setFitWidth(width);
 			t.setFitHeight(height);
+			t.setOnMouseClicked(e->{
+				System.out.println(pos.toString());
+			});
 
 		}
 		public void addTile( IntegerPosition pos, Rectangle t ) {
@@ -176,6 +183,8 @@ public class MapPane extends Pane{
 		}
 	}
 
+	
+	
 
 	LinkedList<Entity> entityToAdd = new LinkedList<>(), entityToRemove = new LinkedList<>();
 	ArrayList<Entity> entitites = new ArrayList<>();
@@ -188,5 +197,9 @@ public class MapPane extends Pane{
 		synchronized (entityToRemove) {
 			entityToRemove.add(e);
 		}
+	}
+	
+	public double pixelsPerTile() {
+		return Game.SIZE / tilesOnScreen;
 	}
 }

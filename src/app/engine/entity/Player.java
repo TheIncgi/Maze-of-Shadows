@@ -7,6 +7,10 @@ import app.misc.Keyboard;
 import app.ui.elements.BaseDrawable;
 import app.ui.elements.IDrawable;
 import app.ui.elements.SettingsPane;
+import javafx.beans.binding.DoubleExpression;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableNumberValue;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import resources.R;
@@ -14,10 +18,15 @@ import resources.R;
 import java.util.HashMap;
 
 import app.Game;
+import app.engine.Engine;
 import app.engine.items.BaseItem;
 
 public class Player extends LivingEntity {
 	HashMap<BaseItem, Integer> inventory = new HashMap<>();
+	double maxStamina = Engine.ticksPerSecond() * 5;
+	SimpleIntegerProperty stamina = new SimpleIntegerProperty( (int) maxStamina );
+	
+	
 	int gold = 0;
 	
 	public Player(int maxHealth) {
@@ -43,10 +52,23 @@ public class Player extends LivingEntity {
 			dx++;
 		if(dx!=0 || dy!=0) {
 			double angle = Math.atan2(dy, dx);	
-			walk(angle);
+			if(Keyboard.isHeld( sets.getSprintKeycode() ) && stamina.get() > 0) {
+				stamina.set(stamina.subtract(1).get());
+				sprint(angle);
+			}else {
+				if(!Keyboard.isHeld( sets.getSprintKeycode() ))
+					stamina.set((int) Math.min(stamina.add(1).get(), maxStamina)  );
+				walk(angle);
+			}
 		}else {
 			velocity.set(0,0);
+			if(!Keyboard.isHeld( sets.getSprintKeycode() ))
+				stamina.set((int) Math.min(stamina.add(2).get(), maxStamina)  );
 		}
+		
+		
+			
+		
 		doMovement();
 	}
 	
@@ -103,4 +125,20 @@ public class Player extends LivingEntity {
 			return super.getLightColor(); //TODO vary by attrib?
 		}
 	}
+
+	public SimpleDoubleProperty healthProperty() {
+		return health;
+	}
+	public SimpleDoubleProperty maxHealthProperty() {
+		return maxHealth;
+	}
+	
+	public SimpleIntegerProperty staminaProperty() {
+		return stamina;
+	}
+
+	public double getMaxStamina() {
+		return maxStamina;
+	}
+	
 }

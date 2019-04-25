@@ -146,11 +146,15 @@ public class Engine {
 	}
 	
 	public void enterTile(Entity entity, IntegerPosition tilePos) {
+		if(entity == null || tilePos == null) return;
 		BaseTile tile = map.getTile(tilePos);
+		if(tile==null)return;
 		tile.onEnter(entity, tilePos);
 	}
 	public void exitTile(Entity entity, IntegerPosition tilePos) {
+		if(entity == null || tilePos == null) return;
 		BaseTile tile = map.getTile(tilePos);
+		if(tile==null)return;
 		tile.onExit(entity, tilePos);
 	}
 }

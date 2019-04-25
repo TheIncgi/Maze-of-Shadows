@@ -1,10 +1,11 @@
 package app.engine.entity;
 
 import app.ui.elements.IDrawable;
+import javafx.beans.property.SimpleDoubleProperty;
 
 public class LivingEntity extends Entity {
-	int health;
-	int maxHealth;
+	SimpleDoubleProperty health;
+	SimpleDoubleProperty maxHealth;
 	
 	/**how many milliseconds untill the next health unit is restored<br>
 	 * default -1 for disabled*/
@@ -12,16 +13,17 @@ public class LivingEntity extends Entity {
 	
 	public LivingEntity(int maxHealth) {
 		super();
-		this.maxHealth = maxHealth;
+		this.maxHealth = new SimpleDoubleProperty(maxHealth);
+		this.health = new SimpleDoubleProperty(maxHealth);
 	}
 	
 	public void heal(int amount) {
 		if(amount <= 0) throw new IllegalArgumentException("Amount must be greater than / equal to 0");
-		health = Math.min(maxHealth, health+amount);
+		health.set(Math.min(maxHealth.get(), health.get()+amount));
 	} 
 	public void damage(int amount) {
 		if(amount <= 0) throw new IllegalArgumentException("Amount must be greater than / equal to 0");
-		health = Math.max(0,  health-amount);
+		health.set(Math.max(0,  health.get()-amount));
 		if(amount == 0)
 			onDeath();
 	}

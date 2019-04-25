@@ -3,10 +3,12 @@ package app;
 import app.engine.Engine;
 import app.engine.Session;
 import app.ui.elements.CreditsPane;
+import app.ui.elements.GameHUD;
 import app.ui.elements.HighScorePane;
 import app.ui.elements.HowToPlayPane;
 import app.ui.elements.PausePane;
 import app.ui.elements.SettingsPane;
+import app.ui.scenes.LevelView;
 import app.ui.scenes.MainMenu;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -37,8 +39,10 @@ public class Game extends Application{
 	private SettingsPane settings;
 	private HighScorePane highScorePane;
 	private CreditsPane creditsPane;
+	private LevelView levelView;
 	private HowToPlayPane howToPlayPane;
 	private Stage stage;
+	private GameHUD gameHud;
 	private PausePane pausePane;
 	private MainMenu mainMenu;
 
@@ -50,6 +54,7 @@ public class Game extends Application{
 		creditsPane = new CreditsPane();
 		howToPlayPane = new HowToPlayPane();
 		pausePane = new PausePane();
+		gameHud = new GameHUD();
 		genericFloor = new Image(R.class.getResourceAsStream("generic_floor_whiter.png"));
 		Scene scene = mainMenu = new MainMenu(stage, SIZE, SIZE);
 		stage.setScene(scene);
@@ -75,6 +80,9 @@ public class Game extends Application{
 		return engine;
 	}
 	
+	public GameHUD getGameHud() {
+		return gameHud;
+	}
 	
 	public SettingsPane getSettings() {
 		return settings;
@@ -98,7 +106,14 @@ public class Game extends Application{
 	public PausePane getPausePane() {
 		return pausePane;
 	}
+	public LevelView getLevelView() {
+		return levelView;
+	}
 	public void exit() {
 		stage.close();
+	}
+
+	public void setLevelView(LevelView levelView) {
+		this.levelView = levelView;
 	}
 }

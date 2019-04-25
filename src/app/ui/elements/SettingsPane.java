@@ -43,6 +43,7 @@ public class SettingsPane extends BorderPane{
 	private Keybinding right   = new Keybinding(KeyCode.D);
 	private Keybinding down    = new Keybinding(KeyCode.S);
 	private Keybinding pauseKey= new Keybinding(KeyCode.P);
+	private Keybinding sprint  = new Keybinding(KeyCode.SHIFT);
 	
 
 	
@@ -71,6 +72,7 @@ public class SettingsPane extends BorderPane{
 		grid.addRow(r++, label("Left:"), left);
 		grid.addRow(r++, label("Down:"), down);
 		grid.addRow(r++, label("Right:"), right);
+		grid.addRow(r++, label("Sprint:"), sprint);
 		grid.addRow(r++, label("Pause:"), pauseKey);
 		
 		grid.addRow(r++, heading("Sound options:"));
@@ -145,5 +147,8 @@ public class SettingsPane extends BorderPane{
 	}
 	public KeyCode getPauseKeycode() {
 		return pauseKey.getKeyCode();
+	}
+	public KeyCode getSprintKeycode() {
+		return sprint.getKeyCode();
 	}
 }
