@@ -6,9 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import app.Game;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -35,6 +39,7 @@ public class HighScorePane extends Pane{
 		
 		
 		GridPane grid = new GridPane();
+		grid.setBackground(new Background(new BackgroundFill(Color.SLATEGRAY.deriveColor(0, 0, 0, .5), new CornerRadii(10), new Insets(0))));
 		grid.setHgap(8);
 		int row = 0;
 		grid.addRow(row++, heading("Place"), heading("Name"),heading("Score"),heading("Date"));
@@ -48,7 +53,7 @@ public class HighScorePane extends Pane{
 		//setAlignment(Pos.CENTER);
 		grid.translateXProperty().bind(widthProperty().divide(2).subtract(grid.widthProperty().divide(2)));
 		grid.translateYProperty().bind(heightProperty().divide(2).subtract(grid.heightProperty().divide(2)));
-		
+		grid.maxWidthProperty().bind(widthProperty().multiply(.8) );
 		
 		setPrefSize(Game.SIZE, Game.SIZE);
 		
@@ -60,7 +65,8 @@ public class HighScorePane extends Pane{
 	
 	private Label label(String text) {
 		Label l = new Label(text);
-		l.setFont(new Font("consolas", 20));
+		l.setFont(new Font("consolas", 12));
+		l.setWrapText(true);
 		l.setTextFill(Color.WHITE);
 		l.setAlignment(Pos.CENTER);
 		return l;

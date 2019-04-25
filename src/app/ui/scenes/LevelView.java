@@ -81,4 +81,5 @@ public class LevelView extends Scene{
 	public MapPane getMapPane() {
 		return mapPane;
 	}
+	
 }

@@ -25,7 +25,7 @@ public class Player extends LivingEntity {
 	HashMap<BaseItem, Integer> inventory = new HashMap<>();
 	double maxStamina = Engine.ticksPerSecond() * 5;
 	SimpleIntegerProperty stamina = new SimpleIntegerProperty( (int) maxStamina );
-	
+	public static boolean sonic = false;
 	
 	int gold = 0;
 	
@@ -52,7 +52,7 @@ public class Player extends LivingEntity {
 			dx++;
 		if(dx!=0 || dy!=0) {
 			double angle = Math.atan2(dy, dx);	
-			if(Keyboard.isHeld( sets.getSprintKeycode() ) && stamina.get() > 0) {
+			if(Keyboard.isHeld( sets.getSprintKeycode() ) && (stamina.get() > 0 || sonic) ) {
 				stamina.set(stamina.subtract(1).get());
 				sprint(angle);
 			}else {

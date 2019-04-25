@@ -1,9 +1,13 @@
 package app.ui.elements;
 
 import app.Game;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -20,15 +24,22 @@ public class HowToPlayPane extends Pane{
 		Label theText = new Label("The player navigates though the maze using the\nmovement keys while trying to avoid monsters and collect loot\nThe player can use items using item keybindings."
 				+ "\nExample text\nExample text\nExample text....");
 		
+		
+		
 		theHeading.setFont(new Font(35));
-		theText.setFont(new Font(20));
+		theText.setFont(new Font(15));
 		theHeading.setTextFill(Color.WHITE);
 		theText.setTextFill(Color.WHITE);
+		theText.setWrapText(true);
 		VBox box = new VBox(8, theHeading, theText, back);
+		box.setBackground(new Background(new BackgroundFill(Color.SLATEGRAY.deriveColor(0, 0, 0, .5), new CornerRadii(10), new Insets(0))));
+		box.setPadding(new Insets(10));
 		this.getChildren().add(box);
 		box.setAlignment(Pos.CENTER);
 		box.translateXProperty().bind(widthProperty().divide(2).subtract(box.widthProperty().divide(2)));
 		box.translateYProperty().bind(heightProperty().divide(2).subtract(box.heightProperty().divide(2)));
+		box.setPrefWidth(Game.SIZE*.8);
+		theText.maxWidthProperty().bind(box.widthProperty());
 		
 		back.setOnAction(e->{
 			if (onReturn != null)

@@ -1,6 +1,7 @@
 package app.ui.elements;
 
 import app.misc.Keybinding;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
@@ -55,6 +57,8 @@ public class SettingsPane extends BorderPane{
 		
 		grid.setAlignment(Pos.CENTER);
 		
+		grid.setBackground(new Background(new BackgroundFill(Color.SLATEGRAY.deriveColor(0, 0, 0, .5), new CornerRadii(10), new Insets(0))));
+		grid.setPadding(new Insets(10));
 		ColumnConstraints c1, c2;
 		c1 = new ColumnConstraints();
 		c2 = new ColumnConstraints();

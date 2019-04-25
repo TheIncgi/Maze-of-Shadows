@@ -1,9 +1,13 @@
 package app.ui.elements;
 
 import app.Game;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -26,7 +30,8 @@ public class CreditsPane extends Pane {
 		box.setAlignment(Pos.CENTER);
 		box.translateXProperty().bind(widthProperty().divide(2).subtract(box.widthProperty().divide(2)));
 		box.translateYProperty().bind(heightProperty().divide(2).subtract(box.heightProperty().divide(2)));
-		
+		box.setBackground(new Background(new BackgroundFill(Color.SLATEGRAY.deriveColor(0, 0, 0, .5), new CornerRadii(10), new Insets(0))));
+		box.setPadding(new Insets(10));
 		getChildren().addAll(box, back);
 		back.setOnAction(e->{
 			if (onReturn != null)
