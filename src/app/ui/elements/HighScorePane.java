@@ -73,9 +73,10 @@ public class HighScorePane extends Pane{
 	}
 	private Label heading(String text) {
 		Label l = new Label(text);
-		l.setFont(new Font("consolas", 35));
+		l.setFont(new Font("consolas", 15));
 		l.setTextFill(Color.WHITE);
 		l.setAlignment(Pos.CENTER);
+		l.setWrapText(true);
 		return l;
 	}
 	
