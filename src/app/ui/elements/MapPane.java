@@ -27,7 +27,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import jdk.internal.dynalink.support.Guards;
 
 public class MapPane extends Pane{
 	Map map;
