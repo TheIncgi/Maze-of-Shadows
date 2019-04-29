@@ -1,7 +1,6 @@
 package app;
 
 import app.engine.Engine;
-import app.engine.Session;
 import app.ui.elements.CreditsPane;
 import app.ui.elements.GameHUD;
 import app.ui.elements.HighScorePane;

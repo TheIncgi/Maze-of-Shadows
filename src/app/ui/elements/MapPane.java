@@ -9,23 +9,17 @@ import java.util.WeakHashMap;
 import app.Game;
 import app.engine.Map;
 import app.engine.entity.Entity;
-import app.engine.entity.Player;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Lighting;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class MapPane extends Pane{

@@ -1,5 +1,12 @@
 package app.misc;
 
+import static javafx.scene.input.KeyCode.A;
+import static javafx.scene.input.KeyCode.B;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.LEFT;
+import static javafx.scene.input.KeyCode.RIGHT;
+import static javafx.scene.input.KeyCode.UP;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,7 +16,6 @@ import app.Game;
 import app.engine.entity.Player;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import static javafx.scene.input.KeyCode.*;
 
 /**
  * Used to track which keys are currently down

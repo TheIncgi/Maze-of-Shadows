@@ -1,7 +1,6 @@
 package app.ui.elements;
 
 import app.Game;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;

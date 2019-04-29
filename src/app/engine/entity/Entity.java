@@ -1,11 +1,7 @@
 package app.engine.entity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import app.Game;
 import app.engine.Engine;
-import app.engine.items.BaseItem;
 import app.engine.tiles.BaseTile;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
@@ -13,25 +9,23 @@ import app.ui.elements.GameHUD;
 import app.ui.elements.IDrawable;
 import app.ui.elements.MapPane;
 import javafx.application.Platform;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public abstract class Entity implements TickListener {
 	DoublePosition pos  = new DoublePosition(0,0);
-	BoundingBox bounds = new BoundingBox(0, 0, 1, 1);
+	//BoundingBox bounds = new BoundingBox(0, 0, 1, 1);
 	IntegerPosition lastTilePos = null;
-	BoundingBox visualBounds;
+	//BoundingBox visualBounds;
 	DoublePosition velocity = new DoublePosition(0d, 0d);
-	ArrayList<IntegerPosition> tileIntersections = new ArrayList<IntegerPosition>((int)((Math.ceil(bounds.getWidth())+1 )*(Math.ceil(bounds.getHeight())+1))); //used to track when an entity enters or exits tiles
+	//ArrayList<IntegerPosition> tileIntersections = new ArrayList<IntegerPosition>((int)((Math.ceil(bounds.getWidth())+1 )*(Math.ceil(bounds.getHeight())+1))); //used to track when an entity enters or exits tiles
 	
 	/**Measured in tiles per game tick*/
 	public static final double MAX_ENTITY_SPEED = 200;
 	public static final double baseSpeed = 100;
 	
-	public boolean intersectsTile(IntegerPosition tilePos) {
-		return intersectsTile(tilePos.getX(), tilePos.getY());
-	}
+//	public boolean intersectsTile(IntegerPosition tilePos) {
+//		return intersectsTile(tilePos.getX(), tilePos.getY());
+//	}
 	
 	public DoublePosition getPos() {
 		return pos;
@@ -128,29 +122,29 @@ public abstract class Entity implements TickListener {
 		velocity.set(0d, 0d);
 	}
 	
-	/**Check if a entity intersects some tile*/
-	private boolean intersectsTile(int tileX, int tileY) {
-		double up =  pos.getY() - bounds.up;
-		double down= pos.getY() + bounds.down;
-		double left= pos.getX() - bounds.left;
-		double right=pos.getX() + bounds.right;
-		return BaseTile.intersectsTile(tileX, tileY, left, up) ||
-			   BaseTile.intersectsTile(tileX, tileY, right, up)||
-			   BaseTile.intersectsTile(tileX, tileY, left, down)||
-			   BaseTile.intersectsTile(tileX, tileY, right, down);
-	}
-	/**Check if this entity moved by some offset intersects some tile*/
-	private boolean intersectsTile(int tileX, int tileY, double eOffsetX, double eOffsetY) {
-		double up =  pos.getY()+eOffsetY - bounds.up;
-		double down= pos.getY()+eOffsetY + bounds.down;
-		double left= pos.getX()+eOffsetX - bounds.left;
-		double right=pos.getX()+eOffsetX + bounds.right;
-		return BaseTile.intersectsTile(tileX, tileY, left, up) ||
-			   BaseTile.intersectsTile(tileX, tileY, right, up)||
-			   BaseTile.intersectsTile(tileX, tileY, left, down)||
-			   BaseTile.intersectsTile(tileX, tileY, right, down);
-	}
-	
+//	/**Check if a entity intersects some tile*/
+//	private boolean intersectsTile(int tileX, int tileY) {
+//		double up =  pos.getY() - bounds.up;
+//		double down= pos.getY() + bounds.down;
+//		double left= pos.getX() - bounds.left;
+//		double right=pos.getX() + bounds.right;
+//		return BaseTile.intersectsTile(tileX, tileY, left, up) ||
+//			   BaseTile.intersectsTile(tileX, tileY, right, up)||
+//			   BaseTile.intersectsTile(tileX, tileY, left, down)||
+//			   BaseTile.intersectsTile(tileX, tileY, right, down);
+//	}
+//	/**Check if this entity moved by some offset intersects some tile*/
+//	private boolean intersectsTile(int tileX, int tileY, double eOffsetX, double eOffsetY) {
+//		double up =  pos.getY()+eOffsetY - bounds.up;
+//		double down= pos.getY()+eOffsetY + bounds.down;
+//		double left= pos.getX()+eOffsetX - bounds.left;
+//		double right=pos.getX()+eOffsetX + bounds.right;
+//		return BaseTile.intersectsTile(tileX, tileY, left, up) ||
+//			   BaseTile.intersectsTile(tileX, tileY, right, up)||
+//			   BaseTile.intersectsTile(tileX, tileY, left, down)||
+//			   BaseTile.intersectsTile(tileX, tileY, right, down);
+//	}
+//	
 	abstract public IDrawable getDrawable();
 	
 	
