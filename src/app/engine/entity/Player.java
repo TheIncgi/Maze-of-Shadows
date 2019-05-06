@@ -1,25 +1,19 @@
 package app.engine.entity;
 
-import app.engine.tiles.Emissive;
-import app.misc.DoublePosition;
-import app.misc.Keybinding;
-import app.misc.Keyboard;
-import app.ui.elements.BaseDrawable;
-import app.ui.elements.IDrawable;
-import app.ui.elements.SettingsPane;
-import javafx.beans.binding.DoubleExpression;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ObservableNumberValue;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import resources.R;
-
 import java.util.HashMap;
 
 import app.Game;
 import app.engine.Engine;
 import app.engine.items.BaseItem;
+import app.engine.tiles.Emissive;
+import app.misc.DoublePosition;
+import app.misc.Keyboard;
+import app.ui.elements.BaseDrawable;
+import app.ui.elements.IDrawable;
+import app.ui.elements.SettingsPane;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.paint.Color;
 
 public class Player extends LivingEntity implements IEmissiveEntity{
 	HashMap<BaseItem, Integer> inventory = new HashMap<>();

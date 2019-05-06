@@ -2,7 +2,6 @@ package app.engine.tiles;
 
 import java.util.List;
 
-import app.engine.entity.BoundingBox;
 import app.engine.entity.Entity;
 import app.misc.IntegerPosition;
 import app.ui.elements.IDrawable;
@@ -35,8 +34,8 @@ abstract public class BaseTile {
 		return String.format("BaseTile: [passable: %s, opaque: %s, resImg: %s]", String.valueOf(isPassable()),String.valueOf(isOpaque()), getDrawable().getResourceName());
 	}
 	
-	private static BoundingBox tileBound = new BoundingBox(0, 0, 1, 1);
-	public static boolean intersectsTile(int tx, int ty, double x, double y) {
-		return tileBound.pointInside(x-tx, y-ty);
-	}
+//	private static BoundingBox tileBound = new BoundingBox(0, 0, 1, 1);
+//	public static boolean intersectsTile(int tx, int ty, double x, double y) {
+//		return tileBound.pointInside(x-tx, y-ty);
+//	}
 }

@@ -2,17 +2,11 @@ package app.engine;
 
 import java.util.LinkedList;
 
-import javax.management.RuntimeErrorException;
-import javax.sql.rowset.spi.SyncResolver;
-
 import app.engine.entity.Entity;
-import app.engine.entity.Player;
 import app.engine.entity.TickListener;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Emissive;
 import app.misc.IntegerPosition;
-import app.ui.elements.BaseDrawable;
-import app.ui.elements.IDrawable;
 
 public class Engine {
 	

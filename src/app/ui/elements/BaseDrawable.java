@@ -1,6 +1,5 @@
 package app.ui.elements;
 
-import app.engine.tiles.Lighting;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import resources.R;

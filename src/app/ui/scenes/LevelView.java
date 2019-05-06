@@ -2,12 +2,10 @@ package app.ui.scenes;
 
 import app.Game;
 import app.engine.Engine;
-import app.engine.Map;
 import app.engine.MapGenerator;
 import app.engine.entity.Player;
 import app.misc.Keyboard;
 import app.ui.elements.GameHUD;
-import app.ui.elements.MapCanvas;
 import app.ui.elements.MapPane;
 import app.ui.elements.PausePane;
 import javafx.animation.AnimationTimer;
