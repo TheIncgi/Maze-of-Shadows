@@ -30,14 +30,16 @@ public class Map {
 	//https://www.desmos.com/calculator/ld2gzlwiyi
 	public void calculateLighting(/*Emissive playerEmissive*/) {
 		lighting.clear();
-		for (int i = 0; i < lightEmitters.size(); i++) {
-			Emissive e = lightEmitters.get(i);
-			solveLightForEmissive(e);
+		synchronized(lightEmitters) {
+			for (int i = 0; i < lightEmitters.size(); i++) {
+				Emissive e = lightEmitters.get(i);
+				solveLightForEmissive(e);
+			}
 		}
-//		if(playerEmissive!=null)
-//			solveLightForEmissive(playerEmissive);
+		//		if(playerEmissive!=null)
+		//			solveLightForEmissive(playerEmissive);
 	}
-	
+
 	private void solveLightForEmissive(Emissive e) {
 		//using the inverse of the function from light factor
 		//determine the maximum number of tiles away that need to be calculated
@@ -56,7 +58,7 @@ public class Map {
 				while(!completed.isEmpty()) {
 					IntegerPosition pos = completed.pop();
 					IntegerPosition tmp;
-					
+
 					tmp = pos.add( 0,  1);
 					if(!added.getOrDefault(tmp, false) && usesLighting(tmp)) added.put(toCalculate.push(tmp), true);
 
@@ -71,20 +73,20 @@ public class Map {
 				}
 		}
 	}
-	
+
 	private Function<IntegerPosition, Lighting> computeNewLighting = new Function<IntegerPosition, Lighting>() {
 		public Lighting apply(IntegerPosition t) {
 			return new Lighting();
 		}
 	};
-	
+
 	private Random r = new Random();
 	private void calculateLighting(Emissive e, double pathLen, IntegerPosition pos) {
 		BaseTile tile = getTile(pos);
 		if(tile!=null && tile.isOpaque()) return;
-		
+
 		r.setSeed(pos.hashCode() + System.currentTimeMillis()/e.flickerTime()); //pseudo random value same for each tile in some time range
-		
+
 		double factor = lightFactor(e.lightHeight(), pathLen);
 		factor *= e.brightness();
 		factor += r.nextGaussian()*e.flickerAmount();
@@ -94,20 +96,22 @@ public class Map {
 		lightData.add(e.getLightColor(), factor);
 	}
 
-	
+
 	public void setTile(BaseTile tile, int x, int y) {
 		if(tile==null) throw new NullPointerException("Attempt to set tile to null");
 		IntegerPosition pos = new IntegerPosition(x, y);
 		List<Emissive> emissives = tile.getEmissives(pos);
 		if(emissives!=null) {
 			for (Emissive emissive : emissives) {
-				lightEmitters.add(emissive);
+				synchronized (lightEmitters) {
+					lightEmitters.add(emissive);
+				}
 			}
 		}
 		tiles.put(pos, tile);
 		//System.out.println("Tile set at "+pos);
 	}
-	
+
 	public BaseTile getTile(int x, int y) {
 		IntegerPosition pos = new IntegerPosition(x, y);
 		return getTile(pos);
@@ -167,6 +171,15 @@ public class Map {
 	public void setLowerBound(int lowerBound) {
 		this.lowerBound = lowerBound;
 	}
-	
-	
+
+	public void addEmissiveSource(Emissive e) {
+		synchronized (lightEmitters) {
+			lightEmitters.add(e);
+		}
+	}
+	public void removeEmissiveSource(Emissive e) {
+		synchronized (lightEmitters) {
+			lightEmitters.remove(e);
+		}
+	}
 }

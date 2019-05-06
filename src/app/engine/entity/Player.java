@@ -21,10 +21,12 @@ import app.Game;
 import app.engine.Engine;
 import app.engine.items.BaseItem;
 
-public class Player extends LivingEntity {
+public class Player extends LivingEntity implements IEmissiveEntity{
 	HashMap<BaseItem, Integer> inventory = new HashMap<>();
 	double maxStamina = Engine.ticksPerSecond() * 5;
 	SimpleIntegerProperty stamina = new SimpleIntegerProperty( (int) maxStamina );
+	private PlayerEmissive playerEmissive = new PlayerEmissive(pos);
+	
 	public static boolean sonic = false;
 	
 	int gold = 0;
@@ -124,6 +126,16 @@ public class Player extends LivingEntity {
 		public Color getLightColor() {
 			return super.getLightColor(); //TODO vary by attrib?
 		}
+	}
+	
+	@Override
+	public Emissive getEmissive() {
+		return playerEmissive;
+	}
+	
+	@Override
+	public double getSprintingSpeed() {
+		return super.getSprintingSpeed() * (sonic? 3 : 1);
 	}
 
 	public SimpleDoubleProperty healthProperty() {

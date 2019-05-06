@@ -9,6 +9,7 @@ import java.util.WeakHashMap;
 import app.Game;
 import app.engine.Map;
 import app.engine.entity.Entity;
+import app.engine.entity.IEmissiveEntity;
 import app.engine.entity.Player;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Lighting;
@@ -30,7 +31,7 @@ import javafx.scene.shape.Rectangle;
 
 public class MapPane extends Pane{
 	Map map;
-	int tilesOnScreen = 6;
+	static int tilesOnScreen = 6;
 	TilePane tiles = new TilePane();
 	TilePane light = new TilePane();
 	DoublePosition focus;
@@ -39,7 +40,7 @@ public class MapPane extends Pane{
 	
 
 	public MapPane() {
-		this.getChildren().addAll(tiles);
+		this.getChildren().addAll(tiles, light);
 		tiles.setLayoutX(Game.SIZE/2f);
 		tiles.setLayoutY(Game.SIZE/2f);
 		light.setLayoutX(Game.SIZE/2f);
@@ -57,12 +58,19 @@ public class MapPane extends Pane{
 					ImageView iv;
 					entityViews.put(entity,iv = new ImageView(entity.getDrawable().getImage()));
 					iv.setTranslateZ(3);
-					getChildren().add(iv);
+					getChildren().add(1,iv);
+					if(entity instanceof IEmissiveEntity) {
+						map.addEmissiveSource(((IEmissiveEntity) entity).getEmissive());
+					}
 				}
 				entityToAdd.clear();
 			}
 			synchronized (entityToRemove) {
-				entitites.removeAll(entityToRemove);
+				for(Entity entity : entityToRemove) {
+					if(entity instanceof IEmissiveEntity)
+						map.removeEmissiveSource(((IEmissiveEntity) entity).getEmissive());
+					entitites.remove(entity);
+				}
 				entityToRemove.clear();
 			}
 		}
@@ -76,10 +84,13 @@ public class MapPane extends Pane{
 			ev.translateYProperty().set(entity.getPos().getY() - ev.getFitHeight()/2);
 		}
 
+		tiles.updateVisiblity();
+		light.updateVisiblity();
+		
+		map.calculateLighting();
 		synchronized (light) {
-
 			for(Entry<IntegerPosition, Node> e : light.tiles.entrySet()) {
-				if (e.getValue() instanceof Rectangle) {
+				if (e.getValue().isVisible() && e.getValue() instanceof Rectangle) {
 					Rectangle r = (Rectangle) e.getValue();
 					Lighting l = map.getLight(e.getKey());
 					if(l!=null)
@@ -112,20 +123,21 @@ public class MapPane extends Pane{
 				BaseTile tile = map.getTile(pos);
 				if(tile!=null) {
 					tiles.addTile(pos, new ImageView(tile.getDrawable().getImage()), 1);
-				}else {
-//					Rectangle r;
-//					synchronized (light) {
-//						light.addTile(pos, r = new Rectangle(light.width, light.height));
-//					}
-//					r.setFill(Color.WHITE);
 				}
-				Rectangle r = new Rectangle(light.width, light.height);
+				Rectangle r;
+				synchronized (light) {
+					light.addTile(pos, r = new Rectangle(light.width, light.height));
+					r.setTranslateZ(25);
+				}
+				r.setFill(Math.random()>.5?Color.WHITE:Color.GRAY);
 				
-				r.setBlendMode(BlendMode.MULTIPLY);
-				light.addTile(pos,  r);
+				
 			}
 		tiles.update();
 		light.update();
+		light.setBlendMode(BlendMode.MULTIPLY);
+		blur.setInput(Game.instance().getSettings().colorAdjust);
+		light.setEffect(blur);
 		onLoaded();
 	}
 	
@@ -133,7 +145,7 @@ public class MapPane extends Pane{
 	
 	public void onLoaded() {}
 
-	static final GaussianBlur blur = new GaussianBlur(10);
+	static final GaussianBlur blur = new GaussianBlur(Game.SIZE/tilesOnScreen/2);
 	private class TilePane extends Pane {
 		HashMap<IntegerPosition, Node> tiles = new HashMap<>();
 		int width = 1, height = 1;
@@ -179,6 +191,27 @@ public class MapPane extends Pane{
 				getChildren().clear();
 				getChildren().addAll(tiles.values());
 			});
+		}
+		public void updateVisiblity() {
+			int leftTile = -(int) (MapPane.this.translateXProperty().get() / width);
+			int rightTile = leftTile + ((tilesOnScreen+1) * width);
+			int topTile = -(int) (MapPane.this.getTranslateY() / height);
+			int bottomTile = topTile + ((tilesOnScreen+1)*height);
+			int vis = 0;
+			int invis = 0;
+			for (Entry<IntegerPosition, Node> entry : tiles.entrySet()) {
+				Node n = entry.getValue();
+				boolean flag = true
+						&& -n.getTranslateX() <= MapPane.this.getTranslateX() + Game.SIZE + width
+						&& MapPane.this.getTranslateX() <= -n.getTranslateX() + Game.SIZE + width
+						&& -n.getTranslateY() <= MapPane.this.getTranslateY() + Game.SIZE + height
+						&& MapPane.this.getTranslateY() <= -n.getTranslateY() + Game.SIZE + height
+						;
+				n.setVisible( flag );
+				vis+=flag?1:0;
+				invis+=flag?0:1;
+			}
+			System.out.printf("Visibilty: %6.3f\n", (vis/(float)(vis+invis)));
 		}
 	}
 
