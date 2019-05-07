@@ -91,4 +91,8 @@ public class DoublePosition {
 	public String toString() {
 		return String.format("DoublePosition (%.2f, %.2f) Hash: %d", x, y, hashCode());
 	}
+
+	public DoublePosition divide(double d) {
+		return new DoublePosition(x/d, y/d);
+	}
 }

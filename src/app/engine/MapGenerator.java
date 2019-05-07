@@ -203,6 +203,10 @@ public class MapGenerator {
 			}
 		};
 	}
+	
+	private static final BaseDrawable wallDrawable = new BaseDrawable() {
+		public String getResourceName() {return "wall.png";};
+	};
 	public BaseTile quickTile() {
 		return new BaseTile() {
 
@@ -219,8 +223,7 @@ public class MapGenerator {
 
 			@Override
 			public IDrawable getDrawable() {
-				return new BaseDrawable() {
-				};
+				return wallDrawable;
 			}
 
 		};

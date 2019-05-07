@@ -37,7 +37,7 @@ public class LevelView extends Scene{
 			}
 		}
 	};
-	
+	private Player player;
 	public LevelView() {
 		super(new Pane(), Game.SIZE, Game.SIZE);
 		Game.instance().setLevelView(this);
@@ -47,15 +47,16 @@ public class LevelView extends Scene{
 		setOnKeyReleased(Keyboard::onKeyRelease);
 
 		//mapCanvas = new MapCanvas(Game.SIZE, Game.SIZE);
-		mapPane = new MapPane() 
-		{public void onLoaded() {
-			engine.unfreeze();
-			timer.start();
-		};};
+		mapPane = new MapPane(){
+			public void onLoaded() {
+				engine.unfreeze();
+				timer.start();
+			}
+		};
 		engine = Game.instance().getEngine();
 		
 		engine.setOnFrozen( this::loadLevel );
-		Player player = new Player(5);
+		player = new Player(5); // 5 is health
 		engine.addEntity( player );
 		mapPane.addEntity( player );
 		mapPane.setFocus( player.getPos() );
@@ -73,7 +74,9 @@ public class LevelView extends Scene{
 	public void loadLevel() {
 		engine.setMap(generator.generate( 20 )); //TODO set up to 40
 		mapPane.setMap(engine.getMap());
+		
 		engine.unfreeze();
+		player.getPos().set(3.5 * Game.instance().getPixelPerTile(), 3.5 * Game.instance().getPixelPerTile());
 	}
 	
 	public MapPane getMapPane() {

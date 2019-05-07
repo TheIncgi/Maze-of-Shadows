@@ -74,10 +74,10 @@ public class MapPane extends Pane{
 				entityToRemove.clear();
 			}
 		}
-
-		this.translateXProperty().set(-focus.getX()+Game.SIZE/2);
-		this.translateYProperty().set(-focus.getY()+Game.SIZE/2);
-
+		if(focus!=null) {
+			this.translateXProperty().set(-focus.getX()+Game.SIZE/2);
+			this.translateYProperty().set(-focus.getY()+Game.SIZE/2);
+		}
 		for (Entity entity : entitites) {
 			ImageView ev = entityViews.get(entity);
 			ev.translateXProperty().set(entity.getPos().getX() - ev.getFitWidth()/2);
@@ -95,6 +95,8 @@ public class MapPane extends Pane{
 					Lighting l = map.getLight(e.getKey());
 					if(l!=null)
 						r.setFill(	l.getColor());
+					else
+						r.setFill( Color.BLACK );
 				}
 			}
 		}
@@ -106,6 +108,7 @@ public class MapPane extends Pane{
 
 	public void setMap(Map map) {
 		this.map = map;
+		map.calculateLighting();
 		tiles.clearTiles();
 		light.clearTiles();
 		light.addBackground();
@@ -138,6 +141,7 @@ public class MapPane extends Pane{
 		light.setBlendMode(BlendMode.MULTIPLY);
 		blur.setInput(Game.instance().getSettings().colorAdjust);
 		light.setEffect(blur);
+		Platform.runLater(MapPane.this::update);
 		onLoaded();
 	}
 	
@@ -211,7 +215,7 @@ public class MapPane extends Pane{
 				vis+=flag?1:0;
 				invis+=flag?0:1;
 			}
-			System.out.printf("Visibilty: %6.3f\n", (vis/(float)(vis+invis)));
+			//System.out.printf("Visibilty: %6.3f\n", (vis/(float)(vis+invis)));
 		}
 	}
 

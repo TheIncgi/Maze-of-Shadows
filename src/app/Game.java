@@ -115,4 +115,8 @@ public class Game extends Application{
 	public void setLevelView(LevelView levelView) {
 		this.levelView = levelView;
 	}
+	/**Returns number of pixels 1 tile takes up*/
+	public double getPixelPerTile() {
+		return Game.instance().getLevelView().getMapPane().pixelsPerTile();
+	}
 }

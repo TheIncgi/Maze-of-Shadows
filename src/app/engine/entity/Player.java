@@ -100,25 +100,26 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 	
 	public static class PlayerEmissive extends Emissive {
 		private DoublePosition playerPos;
+		Color lightColor = Color.SALMON;
 		public PlayerEmissive(DoublePosition playerPos) {
 			super();
 			this.playerPos = playerPos;
 		}
 		@Override
 		public DoublePosition getSource() {
-			return playerPos.add(.5, .5);
+			return playerPos.divide(Game.instance().getPixelPerTile()).add(-3, -3);
 		}
 		@Override
 		public double flickerAmount() {
-			return 1;
+			return .02;
 		}
 		@Override
 		public double brightness() {
-			return 3; //TODO vary by health or other attrib?
+			return 1.75; //TODO vary by health or other attrib?
 		}
 		@Override
 		public Color getLightColor() {
-			return super.getLightColor(); //TODO vary by attrib?
+			return lightColor; //TODO vary by attrib?
 		}
 	}
 	

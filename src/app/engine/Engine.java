@@ -1,12 +1,19 @@
 package app.engine;
 
+import java.io.IOException;
 import java.util.LinkedList;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import app.engine.entity.Entity;
 import app.engine.entity.TickListener;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Emissive;
 import app.misc.IntegerPosition;
+import resources.R;
 
 public class Engine {
 	
@@ -49,6 +56,7 @@ public class Engine {
 		}, "Engine Thread"); 
 		running = true;
 		engineThread.start();
+		startMusic();
 	}
 	
 	public void stop() {
@@ -150,5 +158,39 @@ public class Engine {
 		BaseTile tile = map.getTile(tilePos);
 		if(tile==null)return;
 		tile.onExit(entity, tilePos);
+	}
+	
+	
+	private Clip getClip(String resName) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
+		Clip clip = AudioSystem.getClip();
+		clip.open(  AudioSystem.getAudioInputStream(R.class.getResourceAsStream(resName)));
+		return clip;
+	}
+	private Clip music, warningSound;
+	public void startMusic() {
+		try{
+			if(music == null) 
+				music = getClip("Into the maze.wav");
+			music.start();
+		}catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+	public void stopMusic() {
+		if(music!=null)
+			music.stop();
+	}
+	public void startWarningSound() {
+		try {
+			if(warningSound==null)
+				warningSound = getClip("unease.wav");
+			warningSound.start();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+	public void stopWarningSound() {
+		if(warningSound!=null)
+			warningSound.stop();
 	}
 }

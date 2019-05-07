@@ -21,11 +21,12 @@ abstract public class Emissive {
 	 * Used for spotlights / focused light sources*/
 	public double getFocus() {return STANDARD_LIGHT_FOCUS;}
 	
-	/**Amount the light value can randomly vary by (effects each tile seperatly)*/
+	/**Amount the light value can randomly vary by (effects each tile seperatly)<br>
+	 * Very small amounts are recommended (like .02)*/
 	public double flickerAmount() {
 		return 0;
 	}
-	/**How long a light randomly changes again*/
+	/**How long until a light randomly changes again*/
 	public int flickerTime() {
 		return 50;
 	}
