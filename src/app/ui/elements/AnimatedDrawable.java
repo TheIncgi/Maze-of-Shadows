@@ -3,6 +3,7 @@ package app.ui.elements;
 import java.io.File;
 import java.util.ArrayList;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import resources.R;
 
@@ -28,9 +29,10 @@ public class AnimatedDrawable extends BaseDrawable{
 		frameTime = Math.round(1000/fps);
 	}
 	
-	@Override
-	public Image getImage() {
-		return frames.get((int) (System.currentTimeMillis() / frameTime % frames.size()) );
+	@Override /**Not implemented!*/
+	public SimpleObjectProperty<Image> getImage() {
+		
+		return null;//return frames.get((int) (System.currentTimeMillis() / frameTime % frames.size()) );
 	}
 	
 	@Override

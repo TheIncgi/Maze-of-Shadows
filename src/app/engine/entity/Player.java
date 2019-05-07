@@ -147,5 +147,9 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 	public double getMaxStamina() {
 		return maxStamina;
 	}
+
+	public void addGold(int amount) {
+		gold += amount;
+	}
 	
 }

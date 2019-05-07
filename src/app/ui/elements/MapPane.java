@@ -56,7 +56,8 @@ public class MapPane extends Pane{
 				for (Entity entity : entityToAdd) {
 					entitites.add(entity);
 					ImageView iv;
-					entityViews.put(entity,iv = new ImageView(entity.getDrawable().getImage()));
+					entityViews.put(entity,iv = new ImageView());
+					iv.imageProperty().bind(entity.getDrawable().getImage());
 					iv.setTranslateZ(3);
 					getChildren().add(1,iv);
 					if(entity instanceof IEmissiveEntity) {
@@ -86,6 +87,12 @@ public class MapPane extends Pane{
 
 		tiles.updateVisiblity();
 		light.updateVisiblity();
+		
+//		synchronized (tiles) {
+//			for (Entry<IntegerPosition, Node> e : tiles.tiles.entrySet()) {
+//				if(e.getValue() instanceof ImageView)
+//			}
+//		}
 		
 		map.calculateLighting();
 		synchronized (light) {
@@ -125,7 +132,9 @@ public class MapPane extends Pane{
 				IntegerPosition pos = new IntegerPosition(x, y);
 				BaseTile tile = map.getTile(pos);
 				if(tile!=null) {
-					tiles.addTile(pos, new ImageView(tile.getDrawable().getImage()), 1);
+					ImageView iv;
+					tiles.addTile(pos, iv = new ImageView(), 1);
+					iv.imageProperty().bind(tile.getDrawable().getImage());
 				}
 				Rectangle r;
 				synchronized (light) {

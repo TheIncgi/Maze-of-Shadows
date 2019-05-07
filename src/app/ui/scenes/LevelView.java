@@ -29,10 +29,6 @@ public class LevelView extends Scene{
 			if(!engine.isRunning()) {
 				this.stop();
 			}else {
-				//if(next <= now) {
-//					mapCanvas.draw();
-				//	next = now + millisPerNano * 1000/60;
-				//}
 				mapPane.update();
 			}
 		}
