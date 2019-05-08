@@ -18,7 +18,7 @@ public class Map {
 	HashMap<IntegerPosition, BaseTile> tiles = new HashMap<>(1024);
 	HashMap<IntegerPosition, Lighting> lighting = new HashMap<>(1024);
 	ArrayList<Emissive> lightEmitters = new ArrayList<>();
-	ArrayList<IntegerPosition> monsterSpanws = new ArrayList<>();
+	ArrayList<IntegerPosition> monsterSpawns = new ArrayList<>();
 	public double minLightLevel = .04;
 
 	public static double lightFactor(double height, double pathDistance) {

@@ -7,6 +7,7 @@ import java.util.Random;
 
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Emissive;
+import app.engine.tiles.GoalTile;
 import app.engine.tiles.GoldOnTheFloorTile;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
@@ -17,6 +18,7 @@ import javafx.scene.paint.Color;
 public class MapGenerator {
 	private int size;
 	public static final double GOLD_CHANCE = 1/50d;
+	public static final double MONSTER_CHANCE = 1/200; 
 
 	public MapGenerator() {
 	}
@@ -112,6 +114,8 @@ public class MapGenerator {
 //		while(!open.isEmpty()) {
 //			closed.put(open.remove(open.size()-1), true);
 //		}
+		IntegerPosition goalPos = open.get(random.nextInt(open.size()));
+		map.setTile(new GoalTile(), goalPos.getX(), goalPos.getY());
 
 		IntegerPosition tmpPos = new IntegerPosition(0, 0), tmp2;  //FIXME this code removes extra tiles to make the halways wider, needs fixing
 		for(int i = 0; i<corridorThickness; i++) {
@@ -133,14 +137,17 @@ public class MapGenerator {
 		
 		
 		System.out.println("Filling map data....");
-		for(int y = boundUp-1; y<=boundDown+1+corridorThickness; y++) {
-			for(int x = boundLeft-1; x<=boundRight+1+corridorThickness; x++) {
+		for(int y = boundUp-10; y<=boundDown+10+corridorThickness; y++) {
+			for(int x = boundLeft-10; x<=boundRight+10+corridorThickness; x++) {
 				tmpPos.set(x, y);
 				if(!closed.containsKey(tmpPos))
 					map.setTile(wall, x, y);
 				else { //SPECIAL TILE SECTION
-					if(Math.random() < GOLD_CHANCE) {
+					if(random.nextDouble() < GOLD_CHANCE) {
 						map.setTile(new GoldOnTheFloorTile(x,y), x, y);
+					}
+					if(random.nextDouble() < MONSTER_CHANCE) {
+						map.monsterSpawns.add(new IntegerPosition(x, y));
 					}
 				}
 			}
