@@ -53,7 +53,7 @@ public abstract class Entity implements TickListener {
 		double y =  (pos.getFloorY() / movementScale) - 3;
 		BaseTile current = Game.instance().getEngine().getMap().getTile((int)x, (int)y);
 		double nextX = Math.floor(x + velocity.getX()/movementScale);
-		double nextY = (int) Math.floor(y +velocity.getY()/movementScale );
+		double nextY = Math.floor(y +velocity.getY()/movementScale );
 		BaseTile next = Game.instance().getEngine().getMap().getTile( (int)nextX, (int)nextY );
 		
 		
@@ -63,26 +63,38 @@ public abstract class Entity implements TickListener {
 			pos.addToSelf(velocity);	
 		
 		{//debug chunk
-			GameHUD hud = Game.instance().getGameHud();
-			hud.debug1.setFill( current == null ? Color.GREEN : Color.RED );
-			hud.debug2.setFill( current != null && current.isPassable() ? Color.GREEN : Color.RED );
-			
-			hud.debug3.setFill( next == null ? Color.GREEN : Color.RED );
-			hud.debug4.setFill( next != null && next.isPassable() ? Color.GREEN : Color.RED );
-			
-			Platform.runLater(()->{
-				hud.debugText.setText(String.format("Current: <%6.2f, %6.2f>,  Next: <%6.2f, %6.2f>", x, y, 
-						 nextX, nextY));
-			});
+//			GameHUD hud = Game.instance().getGameHud();
+//			hud.debug1.setFill( current == null ? Color.GREEN : Color.RED );
+//			hud.debug2.setFill( current != null && current.isPassable() ? Color.GREEN : Color.RED );
+//			
+//			hud.debug3.setFill( next == null ? Color.GREEN : Color.RED );
+//			hud.debug4.setFill( next != null && next.isPassable() ? Color.GREEN : Color.RED );
+//			
+//			Platform.runLater(()->{
+//				hud.debugText.setText(String.format("Current: <%6.2f, %6.2f>,  Next: <%6.2f, %6.2f>", x, y, 
+//						 nextX, nextY));
+//			});
 		}
 		
-//		if(lastTilePos == null || !lastTilePos.equals(nextTilePos) && (next == null || next.isPassable())) {
+		
+		int currentX = (int) Math.floor(x + velocity.getX()/movementScale);
+		int currentY = (int) Math.floor(y +velocity.getY()/movementScale );
+		if(lastTilePos == null) {
+			lastTilePos = new IntegerPosition(currentX, currentY);
+			enteredTile(lastTilePos);
+		}else {
+			if(lastTilePos.getX() != currentX || lastTilePos.getY() != currentY) {
+				exitedTile(lastTilePos);
+				lastTilePos.set(currentX, currentY);
+				enteredTile(lastTilePos);
+			}
+		}
 //			if(lastTilePos!=null)
 //				exitedTile(lastTilePos);
 //			if(nextTilePos!=null)
 //				enteredTile(nextTilePos);
 //			lastTilePos = nextTilePos;
-//		}
+		
 		
 		//tileCheck();
 	}

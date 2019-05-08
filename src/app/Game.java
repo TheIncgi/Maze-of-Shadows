@@ -5,6 +5,7 @@ import app.ui.elements.CreditsPane;
 import app.ui.elements.GameHUD;
 import app.ui.elements.HighScorePane;
 import app.ui.elements.HowToPlayPane;
+import app.ui.elements.MapPane;
 import app.ui.elements.PausePane;
 import app.ui.elements.SettingsPane;
 import app.ui.scenes.LevelView;
@@ -116,7 +117,7 @@ public class Game extends Application{
 		this.levelView = levelView;
 	}
 	/**Returns number of pixels 1 tile takes up*/
-	public double getPixelPerTile() {
-		return Game.instance().getLevelView().getMapPane().pixelsPerTile();
+	public static double getPixelPerTile() {
+		return MapPane.pixelsPerTile();
 	}
 }

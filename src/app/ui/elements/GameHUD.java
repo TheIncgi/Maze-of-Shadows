@@ -22,12 +22,13 @@ public class GameHUD extends BorderPane{
 	Label staminaLabel = new Label("Stamina:");
 	public ProgressBar staminaBar = new ProgressBar();
 	
-	public Circle debug1 = new Circle(height/2, Color.GRAY);
-	public Circle debug2 = new Circle(height/2, Color.GRAY);
-	public Circle debug3 = new Circle(height/2, Color.GRAY);
-	public Circle debug4 = new Circle(height/2, Color.GRAY);
+//	public Circle debug1 = new Circle(height/2, Color.GRAY);
+//	public Circle debug2 = new Circle(height/2, Color.GRAY);
+//	public Circle debug3 = new Circle(height/2, Color.GRAY);
+//	public Circle debug4 = new Circle(height/2, Color.GRAY);
 	
-	public Label debugText = new Label();
+	//public Label debugText = new Label();
+	public Label goldAmount = new Label("Very poor");
 	
 	public GameHUD() {
 		super();
@@ -41,9 +42,9 @@ public class GameHUD extends BorderPane{
 		staminaBar.setProgress(1);
 		staminaBar.setPrefSize(Game.SIZE/5, height);
 		
-		debugText.setBackground( new Background(new BackgroundFill(Color.WHITE, new CornerRadii(5), new Insets(0))) );
+		//debugText.setBackground( new Background(new BackgroundFill(Color.WHITE, new CornerRadii(5), new Insets(0))) );
 		
-		top.getChildren().addAll(healthLabel, healthBar, debug1, debug2, debug3, debug4, staminaLabel, staminaBar);
-		setBottom(debugText);
+		top.getChildren().addAll(healthLabel, healthBar, staminaLabel, staminaBar, new Label("Gold:"), goldAmount);
+		//setBottom(debugText);
 	}
 }

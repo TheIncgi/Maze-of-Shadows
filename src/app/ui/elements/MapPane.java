@@ -244,7 +244,7 @@ public class MapPane extends Pane{
 		}
 	}
 	
-	public double pixelsPerTile() {
+	public static double pixelsPerTile() {
 		return Game.SIZE / tilesOnScreen;
 	}
 }

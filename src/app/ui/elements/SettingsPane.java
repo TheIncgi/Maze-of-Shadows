@@ -1,6 +1,8 @@
 package app.ui.elements;
 
 import app.misc.Keybinding;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -152,5 +154,19 @@ public class SettingsPane extends BorderPane{
 	}
 	public KeyCode getSprintKeycode() {
 		return sprint.getKeyCode();
+	}
+	
+	public DoubleProperty getMasterVolume() {
+		return masterVolume.valueProperty();
+	}
+	public DoubleProperty getMusicVolume() {
+		return music.valueProperty();
+	}
+	public DoubleProperty getSfxVolume() {
+		return effects.valueProperty();
+	}
+	
+	public StringProperty getPauseKeyText() {
+		return pauseKey.textProperty();
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Random;
 
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Emissive;
+import app.engine.tiles.GoldOnTheFloorTile;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
 import app.ui.elements.BaseDrawable;
@@ -15,6 +16,7 @@ import javafx.scene.paint.Color;
 
 public class MapGenerator {
 	private int size;
+	public static final double GOLD_CHANCE = 1/50d;
 
 	public MapGenerator() {
 	}
@@ -34,7 +36,8 @@ public class MapGenerator {
 		return map;
 	}
 	Long seed;
-	public Map generate(int size) {
+	public Map generate(int level) {
+		size = level*2+20;
 		System.out.println("Generating map of size "+size);
 		int wallThickness = 2; //corridor length
 		int corridorThickness = 2;// must be <= to wall thickness
@@ -127,12 +130,19 @@ public class MapGenerator {
 			}
 		}
 		
+		
+		
 		System.out.println("Filling map data....");
 		for(int y = boundUp-1; y<=boundDown+1+corridorThickness; y++) {
 			for(int x = boundLeft-1; x<=boundRight+1+corridorThickness; x++) {
 				tmpPos.set(x, y);
 				if(!closed.containsKey(tmpPos))
 					map.setTile(wall, x, y);
+				else { //SPECIAL TILE SECTION
+					if(Math.random() < GOLD_CHANCE) {
+						map.setTile(new GoldOnTheFloorTile(x,y), x, y);
+					}
+				}
 			}
 		}
 		
@@ -149,7 +159,7 @@ public class MapGenerator {
 			}
 			@Override
 			public double brightness() {
-				return 3;
+				return 3-level/2;
 			}
 		});
 		map.setLeftBound(boundLeft);
@@ -228,4 +238,5 @@ public class MapGenerator {
 
 		};
 	}
+	
 }

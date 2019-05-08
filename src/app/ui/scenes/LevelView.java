@@ -8,6 +8,7 @@ import app.misc.Keyboard;
 import app.ui.elements.GameHUD;
 import app.ui.elements.MapPane;
 import app.ui.elements.PausePane;
+import app.ui.elements.SlidingPane;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -19,7 +20,13 @@ public class LevelView extends Scene{
 	Pane root;
 	//MapCanvas mapCanvas;
 	MapPane mapPane;
+	
+	Pane gameView = new Pane();
+	
 	GameHUD hud;
+	public int level = 0;
+	
+	SlidingPane sliding = new SlidingPane(this.widthProperty(), this.heightProperty());
 	
 	AnimationTimer timer = new AnimationTimer() {
 		//long next = System.nanoTime();
@@ -56,8 +63,10 @@ public class LevelView extends Scene{
 		engine.addEntity( player );
 		mapPane.addEntity( player );
 		mapPane.setFocus( player.getPos() );
-		
-		root.getChildren().addAll(mapPane, hud = Game.instance().getGameHud());
+
+		root.getChildren().add(sliding);
+		gameView.getChildren().addAll(mapPane, hud = Game.instance().getGameHud());
+		sliding.setCurrent(gameView);
 		
 		hud.healthBar.progressProperty().bind( player.healthProperty().divide(player.maxHealthProperty() ));
 		hud.staminaBar.progressProperty().bind( player.staminaProperty().divide(player.getMaxStamina()) );
@@ -68,7 +77,7 @@ public class LevelView extends Scene{
 	}
 	
 	public void loadLevel() {
-		engine.setMap(generator.generate( 20 )); //TODO set up to 40
+		engine.setMap(generator.generate( level )); //TODO set up to 40
 		mapPane.setMap(engine.getMap());
 		
 		engine.unfreeze();
@@ -77,6 +86,19 @@ public class LevelView extends Scene{
 	
 	public MapPane getMapPane() {
 		return mapPane;
+	}
+
+	//called from keyboard handler
+	public void onPause() {
+		if(!Game.instance().getEngine().isPaused()) {
+			System.out.println("Paused!");
+			Game.instance().getEngine().setPaused(true);
+			sliding.fromRight(pauseOverlay);
+		}else {
+			System.out.println("Unpaused!");
+			Game.instance().getEngine().setPaused(false);
+			sliding.fromLeft(gameView);
+		}
 	}
 	
 }

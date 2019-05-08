@@ -13,6 +13,9 @@ import app.engine.entity.TickListener;
 import app.engine.tiles.BaseTile;
 import app.engine.tiles.Emissive;
 import app.misc.IntegerPosition;
+import app.misc.SoundManager;
+import app.misc.SoundManager.SoundChannel;
+import app.misc.SoundManager.Sounds;
 import resources.R;
 
 public class Engine {
@@ -27,6 +30,7 @@ public class Engine {
 	volatile boolean running = false;
 	//skip ticks while loading a map so entities don't move through unloaded maps
 	private volatile boolean freeze = false;
+	private boolean paused;
 	private boolean notifiedFrozen;
 	
 	public Engine() {
@@ -56,7 +60,7 @@ public class Engine {
 		}, "Engine Thread"); 
 		running = true;
 		engineThread.start();
-		startMusic();
+		SoundManager.playSound(Sounds.BACKGROUND_1, SoundChannel.MUSIC); //begin the music
 	}
 	
 	public void stop() {
@@ -75,7 +79,7 @@ public class Engine {
 		}else {
 			Emissive.lightScale = Math.min(1, Emissive.lightScale + 1/(ticksPerSecond()));
 		}
-		
+		if(paused) return;
 		synchronized(entities) {
 			synchronized (toAdd) {
 				entities.addAll( toAdd );
@@ -161,36 +165,12 @@ public class Engine {
 	}
 	
 	
-	private Clip getClip(String resName) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
-		Clip clip = AudioSystem.getClip();
-		clip.open(  AudioSystem.getAudioInputStream(R.class.getResourceAsStream(resName)));
-		return clip;
+	public void setPaused(boolean b) {
+		this.paused = b;
 	}
-	private Clip music, warningSound;
-	public void startMusic() {
-		try{
-			if(music == null) 
-				music = getClip("Into the maze.wav");
-			music.start();
-		}catch (Throwable e) {
-			e.printStackTrace();
-		}
+	public boolean isPaused() {
+		return paused;
 	}
-	public void stopMusic() {
-		if(music!=null)
-			music.stop();
-	}
-	public void startWarningSound() {
-		try {
-			if(warningSound==null)
-				warningSound = getClip("unease.wav");
-			warningSound.start();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-	}
-	public void stopWarningSound() {
-		if(warningSound!=null)
-			warningSound.stop();
-	}
+	
+	
 }

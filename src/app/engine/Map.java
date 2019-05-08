@@ -27,7 +27,7 @@ public class Map {
 
 
 	//Made this to calculate
-	//https://www.desmos.com/calculator/ld2gzlwiyi
+	//https://www.desmos.com/calculator/9bb2telra6
 	public void calculateLighting(/*Emissive playerEmissive*/) {
 		lighting.clear();
 		synchronized(lightEmitters) {

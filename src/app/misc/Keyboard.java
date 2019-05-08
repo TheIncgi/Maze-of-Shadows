@@ -14,6 +14,7 @@ import java.util.Queue;
 
 import app.Game;
 import app.engine.entity.Player;
+import app.ui.elements.SlidingPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -35,6 +36,9 @@ public class Keyboard {
 		if(hist.size()>code.length) hist.poll();
 		heldKeys.put(event.getCode(), true);
 		
+		if(event.getCode().equals(Game.instance().getSettings().getPauseKeycode())) {
+			Game.instance().getLevelView().onPause();
+		}
 		
 		if(hist.size() != code.length) return;
 		Iterator<KeyCode> itter = hist.iterator();
@@ -46,6 +50,8 @@ public class Keyboard {
 		Player.sonic = true;
 		Game.instance().getGameHud().staminaBar.progressProperty().unbind();
 		Game.instance().getGameHud().staminaBar.setProgress(-1);
+		
+		
 	}
 	public static void onKeyRelease(KeyEvent event) {
 		heldKeys.remove(event.getCode());

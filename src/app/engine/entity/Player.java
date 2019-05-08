@@ -11,6 +11,7 @@ import app.misc.Keyboard;
 import app.ui.elements.BaseDrawable;
 import app.ui.elements.IDrawable;
 import app.ui.elements.SettingsPane;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.paint.Color;
@@ -23,10 +24,16 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 	
 	public static boolean sonic = false;
 	
-	int gold = 0;
+	SimpleIntegerProperty gold = new SimpleIntegerProperty(0);
 	
 	public Player(int maxHealth) {
 		super(maxHealth);
+		gold.addListener(e->{
+			Platform.runLater(()->{Game.instance().getGameHud().goldAmount.setText(
+					getGold()==0? "Very poor" : Integer.toString(getGold())
+					);
+			});
+		});
 	}
 	
 	public void useItem(BaseItem item) {
@@ -78,11 +85,11 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 	}
 	
 	public int getGold() {
-		return gold;
+		return gold.get();
 	}
 	
 	public void setGold(int gold) {
-		this.gold = gold;
+		this.gold.set(gold);
 	}
 	
 	
@@ -98,7 +105,7 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 		return drawable;
 	}
 	
-	public static class PlayerEmissive extends Emissive {
+	public class PlayerEmissive extends Emissive {
 		private DoublePosition playerPos;
 		Color lightColor = Color.SALMON;
 		public PlayerEmissive(DoublePosition playerPos) {
@@ -107,7 +114,8 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 		}
 		@Override
 		public DoublePosition getSource() {
-			return playerPos.divide(Game.instance().getPixelPerTile()).add(-3, -3);
+			Game.instance();
+			return playerPos.divide(Game.getPixelPerTile()).add(-3, -3);
 		}
 		@Override
 		public double flickerAmount() {
@@ -115,7 +123,7 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 		}
 		@Override
 		public double brightness() {
-			return 1.75; //TODO vary by health or other attrib?
+			return 1.75 * (health.get()/maxHealth.get()); //TODO vary by health or other attrib?
 		}
 		@Override
 		public Color getLightColor() {
@@ -149,7 +157,7 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 	}
 
 	public void addGold(int amount) {
-		gold += amount;
+		setGold(getGold()+amount);
 	}
 	
 }
