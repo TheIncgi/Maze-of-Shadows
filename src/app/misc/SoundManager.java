@@ -27,7 +27,9 @@ public class SoundManager {
 	public static enum Sounds{
 		BACKGROUND_1,
 		WARNING,
-		CASH;
+		CASH,
+		WIND_SUSSTAIN,
+		WIND_FADE_IN;
 		public String getResName() {
 			
 			switch(this) {
@@ -37,6 +39,10 @@ public class SoundManager {
 				return "unease.wav";
 			case CASH:
 				return "cash.wav";
+			case WIND_FADE_IN:
+				return "wind_fadein.wav";
+			case WIND_SUSSTAIN:
+				return "wind.wav";
 			default:
 				return null;	
 			}
@@ -48,7 +54,8 @@ public class SoundManager {
 	public static enum SoundChannel{
 		MASTER,
 		MUSIC,
-		SFX;
+		SFX,
+		ATMOSPHERE;
 		
 		public DoubleProperty getSoundProperty() {
 			SettingsPane sets = Game.instance().getSettings();
@@ -59,6 +66,8 @@ public class SoundManager {
 				return sets.getMusicVolume();
 			case SFX:
 				return sets.getSfxVolume();
+			case ATMOSPHERE:
+				return sets.getAtmosphereVolume();
 			default:
 				return null;
 			}
@@ -74,13 +83,36 @@ public class SoundManager {
 		return clip;
 	}
 	
-	public static Clip playSound(Sounds sound, SoundChannel channel) {
+	public static void playThenLoop(Sounds fadeIn, Sounds susstain, SoundChannel channel) {
+		Clip in = getSound(fadeIn, channel);
+		Clip sus= getSound(susstain, channel);
+		in.addLineListener(new LineListener() {
+			@Override
+			public void update(LineEvent event) {
+				if(event.getType().equals(Type.STOP)) {
+					sus.loop(Clip.LOOP_CONTINUOUSLY);
+					sus.start();
+				}
+			}
+		});
+		
+		regVolumeListener(in, channel);
+		regVolumeListener(sus, channel);
+		in.start();
+		
+	}
+	
+	public static Clip playSound(Sounds sound, SoundChannel channel) { 
+		Clip c = getSound(sound, channel); 
+		c.start(); 
+		return c;
+	}
+	public static Clip getSound(Sounds sound, SoundChannel channel) {
 		Clip clip;
 		try {
 			clip = getClip( sound.getResName() );
 			if(clip==null) {System.err.println("Warning: missing sound '"+sound.name()+":"+sound.getResName()+"'"); return null;};
 			regVolumeListener(clip, channel);
-			clip.start();
 			return clip;
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
@@ -89,22 +121,36 @@ public class SoundManager {
 	}
 	private static void regVolumeListener(final Clip clip, final SoundChannel sc) {
 		DoubleProperty volume = sc.getSoundProperty();
-		volume.addListener(new WeakChangeListener<Number>(new ChangeListener<Number>() {
+		
+		ChangeListener<Number> listener = new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				setClipVolume(clip, newValue.doubleValue());
+				setClipVolume(clip, sc.equals(SoundChannel.MASTER)?1:volume.get());
 			}
-		}));
+		};
+		
+		volume.addListener( listener );
+		
+		if(!sc.equals(SoundChannel.MASTER)) {
+			SoundChannel.MASTER.getSoundProperty().addListener( listener );
+			setClipVolume(clip, SoundChannel.MASTER.getSoundProperty().get() * sc.getSoundProperty().get());
+		}else {
+			setClipVolume(clip, SoundChannel.MASTER.getSoundProperty().doubleValue());
+		}
 		
 		clip.addLineListener((event)->{
 			if(event.getType() .equals( Type.STOP )) {
 				activeSounds.remove(clip);
 				clip.close();
+				sc.getSoundProperty().removeListener(listener);
+				if(!sc.equals(SoundChannel.MASTER))
+					SoundChannel.MASTER.getSoundProperty().removeListener(listener);
 				
 			}else if(event.getType().equals(Type.START)) {
 				activeSounds.add(clip);
 			}
 		});
+		
 	}
 	
 	public void stopAll() {
@@ -112,6 +158,7 @@ public class SoundManager {
 	}
 	
 	private static void setClipVolume(Clip clip, double level) {
+		level *= SoundChannel.MASTER.getSoundProperty().get();
 		FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 		float range = volume.getMaximum() - volume.getMinimum();
 		float gain = (float) (range * level + volume.getMinimum());

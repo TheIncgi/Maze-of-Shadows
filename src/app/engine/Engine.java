@@ -61,6 +61,7 @@ public class Engine {
 		running = true;
 		engineThread.start();
 		SoundManager.playSound(Sounds.BACKGROUND_1, SoundChannel.MUSIC); //begin the music
+		SoundManager.playThenLoop(Sounds.WIND_FADE_IN, Sounds.WIND_SUSSTAIN, SoundChannel.ATMOSPHERE);
 	}
 	
 	public void stop() {

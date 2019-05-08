@@ -34,9 +34,10 @@ public class SettingsPane extends BorderPane{
 	private Slider brightness = new Slider(-.2, .2, 0);
 	private Slider saturation = new Slider(-.2, .2, 0);
 	
-	private Slider masterVolume = new Slider(0, 100, 75);
-	private Slider music = new Slider(0, 100, 75);
-	private Slider effects = new Slider(0, 100, 75);
+	private Slider masterVolume = new Slider(0, 1, 1.0);
+	private Slider music = new Slider(0, 1, 1.0);
+	private Slider effects = new Slider(0, 1, 1.0);
+	private Slider atmosphereVolume = new Slider(0, 1, .91);
 	
 	public ColorAdjust colorAdjust;
 	
@@ -83,6 +84,7 @@ public class SettingsPane extends BorderPane{
 		grid.addRow(r++, label("Master Volume:"), masterVolume);
 		grid.addRow(r++, label("Music:"), music);
 		grid.addRow(r++, label("Effects:"), effects);
+		grid.addRow(r++, label("Atmosphere"), atmosphereVolume);
 		setBottom(back = new Button("Back"));
 		back.setOnAction(e->{if(onReturn!=null)onReturn.run();});
 		
@@ -106,6 +108,7 @@ public class SettingsPane extends BorderPane{
 		extra(masterVolume);
 		extra(music);
 		extra(effects);
+		extra(atmosphereVolume);
 		
 	}
 	
@@ -124,6 +127,7 @@ public class SettingsPane extends BorderPane{
 	private void extra(Slider s) {
 		Tooltip tip = new Tooltip();
 		s.valueProperty().addListener(e->{tip.setText(String.format("%.3f", s.valueProperty().get()));});
+		tip.setText(String.format("%.3f", s.valueProperty().get()));
 		Tooltip.install(s, tip);
 		
 		s.setMajorTickUnit((s.getMax()-s.getMin())/10);
@@ -168,5 +172,9 @@ public class SettingsPane extends BorderPane{
 	
 	public StringProperty getPauseKeyText() {
 		return pauseKey.textProperty();
+	}
+
+	public DoubleProperty getAtmosphereVolume() {
+		return atmosphereVolume.valueProperty();
 	}
 }

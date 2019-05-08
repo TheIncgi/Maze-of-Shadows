@@ -1,5 +1,6 @@
 package app.ui.scenes;
 
+
 import app.Game;
 import app.engine.Engine;
 import app.engine.MapGenerator;
@@ -9,8 +10,11 @@ import app.ui.elements.GameHUD;
 import app.ui.elements.MapPane;
 import app.ui.elements.PausePane;
 import app.ui.elements.SlidingPane;
+import app.ui.elements.SlidingPane.Extra;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.Pane;
 
 public class LevelView extends Scene{
@@ -21,7 +25,7 @@ public class LevelView extends Scene{
 	//MapCanvas mapCanvas;
 	MapPane mapPane;
 	
-	Pane gameView = new Pane();
+	//Pane gameView = new Pane();
 	
 	GameHUD hud;
 	public int level = 0;
@@ -64,9 +68,9 @@ public class LevelView extends Scene{
 		mapPane.addEntity( player );
 		mapPane.setFocus( player.getPos() );
 
-		root.getChildren().add(sliding);
-		gameView.getChildren().addAll(mapPane, hud = Game.instance().getGameHud());
-		sliding.setCurrent(gameView);
+		root.getChildren().addAll(mapPane, sliding);//)sliding);
+		//gameView.getChildren().addAll(mapPane, hud = Game.instance().getGameHud());
+		sliding.setCurrent(hud = Game.instance().getGameHud());
 		
 		hud.healthBar.progressProperty().bind( player.healthProperty().divide(player.maxHealthProperty() ));
 		hud.staminaBar.progressProperty().bind( player.staminaProperty().divide(player.getMaxStamina()) );
@@ -81,23 +85,53 @@ public class LevelView extends Scene{
 		mapPane.setMap(engine.getMap());
 		
 		engine.unfreeze();
-		player.getPos().set(3.5 * Game.instance().getPixelPerTile(), 3.5 * Game.instance().getPixelPerTile());
+		player.getPos().set(3.5 * Game.getPixelPerTile(), 3.5 * Game.getPixelPerTile());
 	}
 	
 	public MapPane getMapPane() {
 		return mapPane;
 	}
 
+	
+	private ColorAdjust ca = new ColorAdjust(0d, 0, 0, 0);
+	private GaussianBlur blur = new GaussianBlur(0);
 	//called from keyboard handler
 	public void onPause() {
+		double maxBlur = Game.SIZE/20d;
+		double maxBrighnessChange = -.4;
+		double maxSaturationChange = -.3;
 		if(!Game.instance().getEngine().isPaused()) {
 			System.out.println("Paused!");
 			Game.instance().getEngine().setPaused(true);
-			sliding.fromRight(pauseOverlay);
+			
+			blur.setInput(ca);
+			mapPane.setEffect(blur);
+			sliding.fromDown(pauseOverlay, new Extra() {
+				@Override
+				public void interpolate(double frac) {
+					blur.setRadius(maxBlur*frac);
+					ca.setBrightness(maxBrighnessChange*frac);
+					ca.setSaturation(maxSaturationChange*frac);
+				}
+				@Override public void onFinish() {}
+			});
 		}else {
 			System.out.println("Unpaused!");
 			Game.instance().getEngine().setPaused(false);
-			sliding.fromLeft(gameView);
+			sliding.fromUp(Game.instance().getGameHud(), new Extra() {
+				@Override
+				public void interpolate(double frac) {
+					frac = 1-frac;
+					blur.setRadius(maxBlur*frac);
+					ca.setBrightness(maxBrighnessChange*frac);
+					ca.setSaturation(maxSaturationChange*frac);
+				}
+				@Override
+				public void onFinish() {
+					mapPane.setEffect(null);
+				}
+			});
+			
 		}
 	}
 	

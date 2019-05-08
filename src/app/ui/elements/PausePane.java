@@ -2,8 +2,12 @@ package app.ui.elements;
 
 import app.Game;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -18,6 +22,7 @@ public class PausePane extends Pane {
 		super();
 		
 		Label unpauseTip = new Label("Press ["+Game.instance().getSettings().getPauseKeyText().get()+"] to unpause");
+		unpauseTip.setTextFill(Color.WHITE);
 		Game.instance().getSettings().getPauseKeyText().addListener(e->{
 			unpauseTip.setText("Press ["+Game.instance().getSettings().getPauseKeyText().get()+"] to unpause");
 		});
@@ -28,25 +33,30 @@ public class PausePane extends Pane {
 		pauseLabel.setFont(new Font(35));
 		pauseLabel.setTextFill(Color.WHITE);
 		
-		VBox box = new VBox(8, pauseLabel, help, settings);
-		Rectangle bg = new Rectangle(0, 0, Game.SIZE, Game.SIZE);
+		VBox box = new VBox(8, pauseLabel,unpauseTip, help, settings);
+		//Rectangle bg = new Rectangle(0, 0, Game.SIZE, Game.SIZE);
 		setPrefSize(Game.SIZE, Game.SIZE);
 		
 		
-		Pane root = new Pane();
-		getChildren().add(slide);
-		slide.setCurrent(root);
-		root.getChildren().addAll(bg, box);
+		getChildren().addAll(/*bg,*/slide);
+		slide.setCurrent(box);
 		box.layoutXProperty().bind(widthProperty().divide(2).subtract(box.widthProperty().divide(2)));
 		box.layoutYProperty().bind(heightProperty().divide(2).subtract(box.heightProperty().divide(2)));
-		
-		help.setOnAction(e->{});
+		//b.setBackground(new Background(new BackgroundFill(Color.SLATEGRAY.deriveColor(0, 0, 0, .5), new CornerRadii(10), new Insets(0))));
+		help.setOnAction(e->{
+			HowToPlayPane htpp = Game.instance().getHowToPlayPane();
+			htpp.setOnReturn(()->{
+				slide.fromRight(box);
+			});
+			slide.fromLeft(htpp);
+		});
 		settings.setOnAction(e->{
 			SettingsPane sets = Game.instance().getSettings();
 			sets.setOnReturn(()->{
-				slide.fromLeft(this);
+				slide.fromLeft(box);
 			});
 			slide.fromRight(sets);
 		});
+		
 	}
 }
