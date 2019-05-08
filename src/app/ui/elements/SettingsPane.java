@@ -114,6 +114,7 @@ public class SettingsPane extends BorderPane{
 	
 	private Label label(String text) {
 		Label l = new Label(text);
+		l.setFont(new Font(l.getFont().getSize()*.9));
 		l.setTextFill(Color.WHITE);
 		return l;
 	}
