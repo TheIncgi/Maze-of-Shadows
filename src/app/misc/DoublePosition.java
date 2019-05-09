@@ -33,7 +33,6 @@ public class DoublePosition {
 		return (int)Math.floor(x);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void addToSelf(DoublePosition b) {
 		x += b.x;
 		y += b.y;

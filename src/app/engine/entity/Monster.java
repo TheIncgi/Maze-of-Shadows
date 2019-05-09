@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import app.Game;
 import app.engine.Engine;
 import app.engine.tiles.BaseTile;
-import app.misc.IntegerPosition;
 import app.ui.elements.AnimatedDrawable;
 import app.ui.elements.IDrawable;
 import app.ui.elements.MapPane;
@@ -23,12 +22,12 @@ public class Monster extends LivingEntity {
 	public void onTick(long now) {
 		drawable.onTick( now );
 		
-		MapPane mapView = Game.instance().getLevelView().getMapPane();
+		//MapPane mapView = Game.instance().getLevelView().getMapPane();
 		double movementScale = MapPane.pixelsPerTile();
 		
 		double x =  (pos.getFloorX() / movementScale) - 3;
 		double y =  (pos.getFloorY() / movementScale) - 3;
-		BaseTile current = Game.instance().getEngine().getMap().getTile((int)x, (int)y);
+		//BaseTile current = Game.instance().getEngine().getMap().getTile((int)x, (int)y);
 		double nextX = Math.floor(x + velocity.getX()/movementScale);
 		double nextY = Math.floor(y +velocity.getY()/movementScale );
 		BaseTile next = Game.instance().getEngine().getMap().getTile( (int)nextX, (int)nextY );

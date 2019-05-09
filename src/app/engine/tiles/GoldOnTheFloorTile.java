@@ -11,7 +11,6 @@ import app.misc.IntegerPosition;
 import app.misc.SoundManager;
 import app.misc.SoundManager.SoundChannel;
 import app.misc.SoundManager.Sounds;
-import app.ui.elements.BaseDrawable;
 import app.ui.elements.IDrawable;
 import app.ui.elements.ToggleDrawable;
 import javafx.scene.paint.Color;

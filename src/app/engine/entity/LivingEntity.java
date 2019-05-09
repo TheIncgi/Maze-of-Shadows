@@ -1,6 +1,5 @@
 package app.engine.entity;
 
-import app.Game;
 import app.engine.Engine;
 import app.ui.elements.IDrawable;
 import javafx.beans.property.SimpleDoubleProperty;

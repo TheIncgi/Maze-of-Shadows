@@ -1,12 +1,9 @@
 package app.ui.elements;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
-import resources.R;
 
 public class AnimatedDrawable extends BaseDrawable{
 	ArrayList<Image> frames;

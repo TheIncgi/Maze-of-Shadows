@@ -49,7 +49,7 @@ public class MapGenerator {
 		corridorThickness--;
 		Random random = seed!=null? new Random(seed) : new Random(); //random seed configurable
 		BaseTile wall = quickTile();
-		BaseTile exit = quickTile(Color.GREEN);
+		//BaseTile exit = quickTile(Color.GREEN);
 		System.out.println("Tiles for map aquired");
 
 		Map map = new Map();

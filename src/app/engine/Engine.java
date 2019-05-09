@@ -1,12 +1,6 @@
 package app.engine;
 
-import java.io.IOException;
 import java.util.LinkedList;
-
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import app.engine.entity.Entity;
 import app.engine.entity.TickListener;
@@ -16,7 +10,6 @@ import app.misc.IntegerPosition;
 import app.misc.SoundManager;
 import app.misc.SoundManager.SoundChannel;
 import app.misc.SoundManager.Sounds;
-import resources.R;
 
 public class Engine {
 	

@@ -16,15 +16,10 @@ import app.engine.tiles.Lighting;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -122,7 +117,7 @@ public class MapPane extends Pane{
 		light.clearTiles();
 		light.addBackground();
 		Game.instance();
-		Image defaultFloor = Game.genericFloor;
+		//Image defaultFloor = Game.genericFloor;
 		float size = (float)(Game.SIZE / tilesOnScreen); 
 		tiles.width = (int) size;
 		tiles.height = (int) size;
@@ -210,12 +205,12 @@ public class MapPane extends Pane{
 			});
 		}
 		public void updateVisiblity() {
-			int leftTile = -(int) (MapPane.this.translateXProperty().get() / width);
-			int rightTile = leftTile + ((tilesOnScreen+1) * width);
-			int topTile = -(int) (MapPane.this.getTranslateY() / height);
-			int bottomTile = topTile + ((tilesOnScreen+1)*height);
-			int vis = 0;
-			int invis = 0;
+			//int leftTile = -(int) (MapPane.this.translateXProperty().get() / width);
+			//int rightTile = leftTile + ((tilesOnScreen+1) * width);
+			//int topTile = -(int) (MapPane.this.getTranslateY() / height);
+			//int bottomTile = topTile + ((tilesOnScreen+1)*height);
+			//int vis = 0;
+			//int invis = 0;
 			for (Entry<IntegerPosition, Node> entry : tiles.entrySet()) {
 				Node n = entry.getValue();
 				boolean flag = true
@@ -225,8 +220,8 @@ public class MapPane extends Pane{
 						&& MapPane.this.getTranslateY() <= -n.getTranslateY() + Game.SIZE + height
 						;
 				n.setVisible( flag );
-				vis+=flag?1:0;
-				invis+=flag?0:1;
+			//	vis+=flag?1:0;
+			//	invis+=flag?0:1;
 			}
 			//System.out.printf("Visibilty: %6.3f\n", (vis/(float)(vis+invis)));
 		}

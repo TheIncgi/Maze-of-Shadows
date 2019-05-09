@@ -16,7 +16,6 @@ import app.misc.SoundManager.SoundChannel;
 import app.misc.SoundManager.Sounds;
 import app.misc.Utils;
 import app.ui.elements.AnimatedDrawable;
-import app.ui.elements.BaseDrawable;
 import app.ui.elements.IDrawable;
 import app.ui.elements.MapPane;
 import app.ui.elements.SettingsPane;

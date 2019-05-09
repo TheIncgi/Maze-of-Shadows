@@ -25,6 +25,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+@Deprecated
 public class MapCanvas extends Pane{
 	Map map;
 	DoublePosition focus = new DoublePosition(0d, 0d);
@@ -73,7 +74,8 @@ public class MapCanvas extends Pane{
 		l.clearRect(0, 0, lighting.getWidth(), lighting.getHeight());
 		l.setFill(Color.BLACK);
 		l.fillRect(0, 0, lighting.getWidth(), lighting.getHeight());
-		Image defaultFloor = Game.instance().genericFloor;
+		Game.instance();
+		Image defaultFloor = Game.genericFloor;
 		if(map==null) {
 			g.setFill(Color.BLACK);
 			g.fillRect(0, 0, tiles.getWidth(), tiles.getHeight());

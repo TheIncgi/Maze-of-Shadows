@@ -5,11 +5,8 @@ import app.engine.Engine;
 import app.engine.tiles.BaseTile;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
-import app.ui.elements.GameHUD;
 import app.ui.elements.IDrawable;
 import app.ui.elements.MapPane;
-import javafx.application.Platform;
-import javafx.scene.paint.Color;
 
 public abstract class Entity implements TickListener {
 	DoublePosition pos  = new DoublePosition(0,0);
@@ -45,13 +42,13 @@ public abstract class Entity implements TickListener {
 	 * Called each game tick to update the entity's position
 	 * */
 	public final void doMovement() {
-		MapPane mapView = Game.instance().getLevelView().getMapPane();
-		double movementScale = mapView.pixelsPerTile();
+		//MapPane mapView = Game.instance().getLevelView().getMapPane();
+		double movementScale = MapPane.pixelsPerTile();
 		
 
 		double x =  (pos.getFloorX() / movementScale) - 3;
 		double y =  (pos.getFloorY() / movementScale) - 3;
-		BaseTile current = Game.instance().getEngine().getMap().getTile((int)x, (int)y);
+		//BaseTile current = Game.instance().getEngine().getMap().getTile((int)x, (int)y);
 		double nextX = Math.floor(x + velocity.getX()/movementScale);
 		double nextY = Math.floor(y +velocity.getY()/movementScale );
 		BaseTile next = Game.instance().getEngine().getMap().getTile( (int)nextX, (int)nextY );

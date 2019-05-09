@@ -14,8 +14,6 @@ import java.util.Queue;
 
 import app.Game;
 import app.engine.entity.Player;
-import app.ui.elements.GameHUD;
-import app.ui.elements.SlidingPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 

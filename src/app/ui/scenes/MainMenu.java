@@ -2,8 +2,6 @@ package app.ui.scenes;
 
 
 
-import com.sun.glass.ui.Window.Level;
-
 import app.Game;
 import app.engine.MapGenerator;
 import app.ui.elements.CreditsPane;

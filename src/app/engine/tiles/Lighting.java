@@ -8,11 +8,11 @@ public class Lighting {
 	private double[] rgb = new double[3];
 	private boolean valid = false; //if needs to be recalculated
 	public Lighting() {
-		color = color.BLACK;
+		color = Color.BLACK;
 	}
 	
 	public void reset() {
-		color = color.BLACK;
+		color = Color.BLACK;
 		rgb[0] = 0;
 		rgb[1] = 0;
 		rgb[2] = 0;

@@ -1,6 +1,5 @@
 package app.ui.elements;
 
-import javafx.animation.AnimationTimer;
 import javafx.animation.Transition;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.layout.Pane;

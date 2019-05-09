@@ -13,15 +13,10 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import app.Game;
-import app.engine.Engine;
 import app.ui.elements.SettingsPane;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WeakChangeListener;
-
-
-
 import resources.R;
 
 public class SoundManager {
