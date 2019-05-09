@@ -2,41 +2,45 @@ package app.ui.elements;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import resources.R;
 
 public class AnimatedDrawable extends BaseDrawable{
-	private ArrayList<Image> frames;
-	// how long to display each frame
-	private long frameTime = 200; //ms
-	private String srcFolder;
+	ArrayList<Image> frames;
+	private int fps;
+	SimpleObjectProperty<Image> activeFrame;
+	int cursor = 0;
 	
-	public AnimatedDrawable(String resFolderName) {
-		File folder = new File(R.class.getResource(resFolderName).getFile());
-		if(!folder.isDirectory()) {throw new IllegalArgumentException("Folder expected for animated resource");}
-		for(int i = 0; true; i++) {
-			File tmp = new File(folder, i+".png");
-			if(!tmp.exists()) break;
-			frames.add(new Image(R.class.getResourceAsStream(resFolderName+File.pathSeparator+i+".png")));
-		}
-		srcFolder = resFolderName;
+	public AnimatedDrawable(int fps, ArrayList<Image> frames) {
+		this.fps = fps;
+		this.frames = frames;
+		activeFrame = new SimpleObjectProperty<>(frames.get(0));
 	}
 	
-	/**Set the framerate for the animation rounded to the nearest millisecond*/
-	public void setFPS(double fps) {
-		frameTime = Math.round(1000/fps);
-	}
 	
-	@Override /**Not implemented!*/
-	public SimpleObjectProperty<Image> getImage() {
-		
-		return null;//return frames.get((int) (System.currentTimeMillis() / frameTime % frames.size()) );
-	}
 	
 	@Override
+	public SimpleObjectProperty<Image> getImage() {
+		return activeFrame;
+	}
 	public String getResourceName() {
-		return srcFolder;
+		return null;
+	};
+	public void nextFrame() {
+		activeFrame.set(frames.get(cursor = (cursor+1)%frames.size()));
+	}
+	long nextFrame = System.currentTimeMillis();
+	public void onTick( long now ) {
+		if(nextFrame <= now) {
+			nextFrame();
+			nextFrame=now+getframeDelay();
+		}
+	}
+	
+	public long getframeDelay() {
+		return (long) (1000/fps);
 	}
 }

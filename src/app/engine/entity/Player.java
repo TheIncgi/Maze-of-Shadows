@@ -1,6 +1,9 @@
 package app.engine.entity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.swing.JOptionPane;
 
 import app.Game;
 import app.engine.Engine;
@@ -8,13 +11,21 @@ import app.engine.items.BaseItem;
 import app.engine.tiles.Emissive;
 import app.misc.DoublePosition;
 import app.misc.Keyboard;
+import app.misc.SoundManager;
+import app.misc.SoundManager.SoundChannel;
+import app.misc.SoundManager.Sounds;
+import app.misc.Utils;
+import app.ui.elements.AnimatedDrawable;
 import app.ui.elements.BaseDrawable;
 import app.ui.elements.IDrawable;
+import app.ui.elements.MapPane;
 import app.ui.elements.SettingsPane;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import resources.R;
 
 public class Player extends LivingEntity implements IEmissiveEntity{
 	HashMap<BaseItem, Integer> inventory = new HashMap<>();
@@ -25,6 +36,8 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 	public static boolean sonic = false;
 	
 	SimpleIntegerProperty gold = new SimpleIntegerProperty(0);
+	
+	int score = 0;
 	
 	public Player(int maxHealth) {
 		super(maxHealth);
@@ -40,9 +53,28 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 		
 	}
 	
+	@Override
+	public void damage(int amount) {
+		if(invulnrableTime>0) return;
+		if(amount <= 0) throw new IllegalArgumentException("Amount must be greater than / equal to 0");
+		health.set(Math.max(0,  health.get()-amount));
+		if(health.get() <= 0)
+			onDeath();
+		invulnrableTime = (int) Engine.ticksPerSecond();
+		SoundManager.playSound(Sounds.OUCH, SoundChannel.SFX);
+	}
 	
 	@Override
 	public void onTick( long now ) {
+		super.onTick(now);
+		for(Entity e : Game.instance().getEngine().getEntities()) {
+			if(e!=this && Utils.distance(e.pos.getX(), e.pos.getY(), pos.getX(), pos.getY()) < MapPane.pixelsPerTile()/4) {
+				if(e instanceof Monster)
+					damage(1);
+			}
+		}
+		
+		
 		SettingsPane sets = Game.instance().getSettings();
 		int dx = 0, dy = 0;
 		if(Keyboard.isHeld( sets.getUpKeycode() )) 
@@ -70,7 +102,7 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 		}
 		
 		
-			
+		drawable.onTick(now);
 		
 		doMovement();
 	}
@@ -94,11 +126,23 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 	
 	
 	
-	private static BaseDrawable drawable = new BaseDrawable() {
-		@Override
-		public String getResourceName() {
-			return "placeholder 2.png";
-		}
+//	private static BaseDrawable drawable = new BaseDrawable() {
+//		@Override
+//		public String getResourceName() {
+//			return "placeholder 2.png";
+//		}
+//	};
+	private static ArrayList<Image> frames = new ArrayList<>();
+	static {
+		for(int i = 0; i<=3; i++)
+			frames.add(new Image(R.class.getResourceAsStream("player_"+i+".png")));
+	}
+	AnimatedDrawable drawable = new AnimatedDrawable(3, frames) {
+		public long getframeDelay() {
+			double fps = Keyboard.isHeld( Game.instance().getSettings().getSprintKeycode() )?
+							(sonic? 20 : 6) : 3; 
+			return (long) (1000/fps);
+		};
 	};
 	@Override
 	public IDrawable getDrawable() {
@@ -158,6 +202,21 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 
 	public void addGold(int amount) {
 		setGold(getGold()+amount);
+		score+=amount;
 	}
 	
+	@Override
+	public void onDeath() {
+		Game.instance().getEngine().stop();
+		SoundManager.stopAll();
+		System.out.println("Prompting for player name...SS");
+		String name = JOptionPane.showInputDialog("Enter your name for the score board");
+		if(name == null) {name = System.getProperty("user.name");}
+		if(name == null) {name = "[?]";}
+		Game.instance().getHighScorePane().addScore(name, score);
+		score = 0;
+		setGold(0);
+		inventory.clear();
+		Platform.runLater(Game.instance().getMainMenu()::returnToMainMenu);
+	}
 }

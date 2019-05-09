@@ -1,6 +1,7 @@
 package app.ui.elements;
 
 import app.Game;
+import app.misc.Utils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -17,7 +18,7 @@ import javafx.scene.text.Font;
 public class PausePane extends Pane {
 	Button unpause, help, settings;
 	SlidingPane slide = new SlidingPane(this.widthProperty(), this.heightProperty());
-	
+	VBox box;
 	public PausePane() {
 		super();
 		
@@ -33,7 +34,7 @@ public class PausePane extends Pane {
 		pauseLabel.setFont(new Font(35));
 		pauseLabel.setTextFill(Color.WHITE);
 		
-		VBox box = new VBox(8, pauseLabel,unpauseTip, help, settings);
+		box = new VBox(8, pauseLabel,unpauseTip, help, settings);
 		//Rectangle bg = new Rectangle(0, 0, Game.SIZE, Game.SIZE);
 		setPrefSize(Game.SIZE, Game.SIZE);
 		
@@ -58,5 +59,15 @@ public class PausePane extends Pane {
 			slide.fromRight(sets);
 		});
 		
+	}
+
+	public void enableShop() {
+		Button shop = new Button("Cheat even more");
+		box.getChildren().add(shop);
+		shop.setOnAction(e->{
+			Utils.shop((item)->{
+				
+			});
+		});
 	}
 }

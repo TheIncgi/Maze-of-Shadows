@@ -57,6 +57,7 @@ public class Engine {
 //				else if( (now - nextTick)/tickDelay > 500 )
 //					throw new RuntimeException("The system is too running slow! Fell 500+ game ticks behind schedule!");
 			}
+			System.out.println("Engine stopped");
 		}, "Engine Thread"); 
 		running = true;
 		engineThread.start();
@@ -151,7 +152,9 @@ public class Engine {
 	public static double ticksPerSecond() {
 		return 30;
 	}
-	
+	public LinkedList<Entity> getEntities() {
+		return entities;
+	}
 	public void enterTile(Entity entity, IntegerPosition tilePos) {
 		if(entity == null || tilePos == null) return;
 		BaseTile tile = map.getTile(tilePos);

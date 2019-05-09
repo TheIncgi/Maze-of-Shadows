@@ -183,4 +183,8 @@ public class Map {
 			lightEmitters.remove(e);
 		}
 	}
+	
+	public ArrayList<IntegerPosition> getMonsterSpawns() {
+		return monsterSpawns;
+	}
 }

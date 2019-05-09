@@ -11,6 +11,7 @@ import app.engine.tiles.GoalTile;
 import app.engine.tiles.GoldOnTheFloorTile;
 import app.misc.DoublePosition;
 import app.misc.IntegerPosition;
+import app.misc.Utils;
 import app.ui.elements.BaseDrawable;
 import app.ui.elements.IDrawable;
 import javafx.scene.paint.Color;
@@ -18,7 +19,7 @@ import javafx.scene.paint.Color;
 public class MapGenerator {
 	private int size;
 	public static final double GOLD_CHANCE = 1/50d;
-	public static final double MONSTER_CHANCE = 1/200; 
+	public static final double MONSTER_CHANCE = 1/20d; 
 
 	public MapGenerator() {
 	}
@@ -115,6 +116,7 @@ public class MapGenerator {
 //			closed.put(open.remove(open.size()-1), true);
 //		}
 		IntegerPosition goalPos = open.get(random.nextInt(open.size()));
+		System.out.println("Goal:"+goalPos);
 		map.setTile(new GoalTile(), goalPos.getX(), goalPos.getY());
 
 		IntegerPosition tmpPos = new IntegerPosition(0, 0), tmp2;  //FIXME this code removes extra tiles to make the halways wider, needs fixing
@@ -142,17 +144,17 @@ public class MapGenerator {
 				tmpPos.set(x, y);
 				if(!closed.containsKey(tmpPos))
 					map.setTile(wall, x, y);
-				else { //SPECIAL TILE SECTION
+				else if(map.getTile(x, y)==null){ //SPECIAL TILE SECTION
 					if(random.nextDouble() < GOLD_CHANCE) {
 						map.setTile(new GoldOnTheFloorTile(x,y), x, y);
 					}
-					if(random.nextDouble() < MONSTER_CHANCE) {
+					if(random.nextDouble() < MONSTER_CHANCE && Utils.distance(x, y, 0, 0) > 12) {
 						map.monsterSpawns.add(new IntegerPosition(x, y));
 					}
 				}
 			}
 		}
-		
+		System.out.println("Beware of "+map.monsterSpawns.size()+" monsters!");
 		System.out.println("Adding origin light");
 		map.lightEmitters.add(new Emissive() {
 			DoublePosition pos = new DoublePosition(.5, .5);

@@ -2,6 +2,8 @@ package app.ui.scenes;
 
 
 
+import com.sun.glass.ui.Window.Level;
+
 import app.Game;
 import app.engine.MapGenerator;
 import app.ui.elements.CreditsPane;
@@ -79,7 +81,10 @@ public class MainMenu extends Scene {
 			});
 			
 			newGame.setOnAction(e->{
-				stage.setScene(new LevelView());
+				LevelView.getLevelProperty().set(0);
+				Game.instance().getLevelView().resetAll();
+				stage.setScene(Game.instance().getLevelView());
+				Game.instance().getEngine().start();
 			});
 			options.setOnAction(e->{
 				SettingsPane p = Game.instance().getSettings();
@@ -108,5 +113,9 @@ public class MainMenu extends Scene {
 		}
 	}
 	
+	
+	public void returnToMainMenu() {
+		stage.setScene(this);
+	}
 	
 }

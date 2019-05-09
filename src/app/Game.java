@@ -1,5 +1,15 @@
 package app;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+
 import app.engine.Engine;
 import app.ui.elements.CreditsPane;
 import app.ui.elements.GameHUD;
@@ -45,6 +55,8 @@ public class Game extends Application{
 	private GameHUD gameHud;
 	private PausePane pausePane;
 	private MainMenu mainMenu;
+	
+	private static HashMap<String, Serializable> userdata;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -55,7 +67,9 @@ public class Game extends Application{
 		howToPlayPane = new HowToPlayPane();
 		pausePane = new PausePane();
 		gameHud = new GameHUD();
+		levelView = new LevelView();
 		genericFloor = new Image(R.class.getResourceAsStream("generic_floor_whiter.png"));
+		loadUserData();
 		Scene scene = mainMenu = new MainMenu(stage, SIZE, SIZE);
 		stage.setScene(scene);
 		
@@ -113,11 +127,45 @@ public class Game extends Application{
 		stage.close();
 	}
 
-	public void setLevelView(LevelView levelView) {
-		this.levelView = levelView;
-	}
+	
 	/**Returns number of pixels 1 tile takes up*/
 	public static double getPixelPerTile() {
 		return MapPane.pixelsPerTile();
+	}
+
+	
+	private static final File userDataFile = new File("MazeOfShadows.userData");
+	public static void saveUserdata() {
+		if(userdata == null) return;
+		instance.settings.exportSettings(userdata);
+		instance.highScorePane.exportSettings(userdata);
+		try(FileOutputStream fos = new FileOutputStream(userDataFile); ObjectOutputStream oos = new ObjectOutputStream(fos);){
+			oos.writeObject(userdata);
+			System.out.println("User data saved!");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	@SuppressWarnings("unchecked")
+	public static void loadUserData() {
+		if(!userDataFile.exists()) {
+			userdata = new HashMap<>();
+			saveUserdata();
+		}else {
+			try(FileInputStream fis = new FileInputStream(userDataFile); ObjectInputStream ois = new ObjectInputStream(fis)){
+				userdata = (HashMap<String, Serializable>) ois.readObject();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		instance.settings.importSettings(userdata);
+		instance.highScorePane.importSettings(userdata);
+		System.out.println("User data loaded");
 	}
 }

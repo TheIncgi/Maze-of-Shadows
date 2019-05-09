@@ -14,6 +14,7 @@ import java.util.Queue;
 
 import app.Game;
 import app.engine.entity.Player;
+import app.ui.elements.GameHUD;
 import app.ui.elements.SlidingPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -25,12 +26,12 @@ public class Keyboard {
 	private static KeyCode[] code = {UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, B, A};
 	private static Queue<KeyCode> hist = new LinkedList<>();
 	
-	
+	private static volatile boolean keyboardEnabled = true; 
 	private static final HashMap<KeyCode, Boolean> heldKeys = new HashMap<>();
 	private Keyboard() {}
 	
 	public static void onKeyPress(KeyEvent event) {
-		if(heldKeys.containsKey(event.getCode())) return;
+		if(heldKeys.containsKey(event.getCode()) || !keyboardEnabled) return;
 		
 		hist.add(event.getCode());
 		if(hist.size()>code.length) hist.poll();
@@ -50,6 +51,7 @@ public class Keyboard {
 		Player.sonic = true;
 		Game.instance().getGameHud().staminaBar.progressProperty().unbind();
 		Game.instance().getGameHud().staminaBar.setProgress(-1);
+		Game.instance().getPausePane().enableShop();
 		
 		
 	}
@@ -62,5 +64,18 @@ public class Keyboard {
 	}
 	public static boolean isHeld( Keybinding binding ) {
 		return isHeld( binding.getKeyCode() );
+	}
+
+	public static void disableInput() {
+		keyboardEnabled = false;
+		releaseAll();
+	}
+	public static void enableInput() {
+		keyboardEnabled = true;
+	}
+
+	public static void releaseAll() {
+		heldKeys.clear();
+		hist.clear();
 	}
 }

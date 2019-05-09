@@ -4,7 +4,9 @@ package app.ui.scenes;
 import app.Game;
 import app.engine.Engine;
 import app.engine.MapGenerator;
+import app.engine.entity.Monster;
 import app.engine.entity.Player;
+import app.misc.IntegerPosition;
 import app.misc.Keyboard;
 import app.ui.elements.GameHUD;
 import app.ui.elements.MapPane;
@@ -12,6 +14,8 @@ import app.ui.elements.PausePane;
 import app.ui.elements.SlidingPane;
 import app.ui.elements.SlidingPane.Extra;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Scene;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
@@ -28,7 +32,7 @@ public class LevelView extends Scene{
 	//Pane gameView = new Pane();
 	
 	GameHUD hud;
-	public int level = 0;
+	public static final SimpleIntegerProperty level = new SimpleIntegerProperty(1);
 	
 	SlidingPane sliding = new SlidingPane(this.widthProperty(), this.heightProperty());
 	
@@ -47,7 +51,7 @@ public class LevelView extends Scene{
 	private Player player;
 	public LevelView() {
 		super(new Pane(), Game.SIZE, Game.SIZE);
-		Game.instance().setLevelView(this);
+		//Game.instance().setLevelView(this);
 		root = (Pane) getRoot();
 		
 		setOnKeyPressed(Keyboard::onKeyPress);
@@ -75,14 +79,24 @@ public class LevelView extends Scene{
 		hud.healthBar.progressProperty().bind( player.healthProperty().divide(player.maxHealthProperty() ));
 		hud.staminaBar.progressProperty().bind( player.staminaProperty().divide(player.getMaxStamina()) );
 		
-		engine.start();
+	
 		
 		
 	}
-	
+	public static SimpleIntegerProperty getLevelProperty() {
+		return level;
+	}
 	public void loadLevel() {
-		engine.setMap(generator.generate( level )); //TODO set up to 40
+		engine.setMap(generator.generate( level.get() )); //TODO set up to 40
+		Platform.runLater(()->{	level.set(level.get()+1);});
 		mapPane.setMap(engine.getMap());
+		engine.getMap().addEmissiveSource(player.getEmissive());
+		
+		for(IntegerPosition pos : engine.getMap().getMonsterSpawns()) {
+			Monster monster = new Monster(pos.getX()+3, pos.getY()+3);
+			engine.addEntity(monster);
+			mapPane.addEntity(monster);
+		}
 		
 		engine.unfreeze();
 		player.getPos().set(3.5 * Game.getPixelPerTile(), 3.5 * Game.getPixelPerTile());
@@ -91,7 +105,9 @@ public class LevelView extends Scene{
 	public MapPane getMapPane() {
 		return mapPane;
 	}
-
+	public Player getPlayer() {
+		return player;
+	}
 	
 	private ColorAdjust ca = new ColorAdjust(0d, 0, 0, 0);
 	private GaussianBlur blur = new GaussianBlur(0);
@@ -134,5 +150,10 @@ public class LevelView extends Scene{
 			
 		}
 	}
+	public void resetAll() {
+		player = new Player(5);
+		Keyboard.releaseAll();
+	}
+	
 	
 }

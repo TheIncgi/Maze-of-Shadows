@@ -13,6 +13,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import app.Game;
+import app.engine.Engine;
 import app.ui.elements.SettingsPane;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -28,6 +29,7 @@ public class SoundManager {
 		BACKGROUND_1,
 		WARNING,
 		CASH,
+		OUCH,
 		WIND_SUSSTAIN,
 		WIND_FADE_IN;
 		public String getResName() {
@@ -43,6 +45,8 @@ public class SoundManager {
 				return "wind_fadein.wav";
 			case WIND_SUSSTAIN:
 				return "wind.wav";
+			case OUCH:
+				return "ouch.wav";
 			default:
 				return null;	
 			}
@@ -89,7 +93,7 @@ public class SoundManager {
 		in.addLineListener(new LineListener() {
 			@Override
 			public void update(LineEvent event) {
-				if(event.getType().equals(Type.STOP)) {
+				if(event.getType().equals(Type.STOP) && Game.instance().getEngine().isRunning()) {
 					sus.loop(Clip.LOOP_CONTINUOUSLY);
 					sus.start();
 				}
@@ -153,8 +157,9 @@ public class SoundManager {
 		
 	}
 	
-	public void stopAll() {
-		
+	public static void stopAll() {
+		while(activeSounds.size()>0)
+			activeSounds.removeFirst().stop();
 	}
 	
 	private static void setClipVolume(Clip clip, double level) {

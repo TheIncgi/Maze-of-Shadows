@@ -56,7 +56,7 @@ public class GoldOnTheFloorTile extends BaseTile{
 	@Override
 	public void onEnter(Entity e, IntegerPosition tilePos) {
 		super.onEnter(e, tilePos);
-		System.out.println("On tile entered gold!");
+		//System.out.println("On tile entered gold!");
 		if(e instanceof Player && !pickedUp) {
 			drawable.getProperty().set(pickedUp = true);
 			Player p = (Player)e;

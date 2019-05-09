@@ -58,6 +58,8 @@ public class MapPane extends Pane{
 					ImageView iv;
 					entityViews.put(entity,iv = new ImageView());
 					iv.imageProperty().bind(entity.getDrawable().getImage());
+					iv.setFitWidth(pixelsPerTile()/4);
+					iv.setFitHeight(pixelsPerTile()/4);
 					iv.setTranslateZ(3);
 					getChildren().add(1,iv);
 					if(entity instanceof IEmissiveEntity) {
@@ -134,6 +136,8 @@ public class MapPane extends Pane{
 				if(tile!=null) {
 					ImageView iv;
 					tiles.addTile(pos, iv = new ImageView(), 1);
+					final int fx = x , fy = y;
+					iv.setOnMouseClicked(e->{if(Player.sonic)System.out.printf("%d, %d\n",fx,fy);});
 					iv.imageProperty().bind(tile.getDrawable().getImage());
 				}
 				Rectangle r;

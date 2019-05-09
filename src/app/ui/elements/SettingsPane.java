@@ -1,5 +1,9 @@
 package app.ui.elements;
 
+import java.io.Serializable;
+import java.util.HashMap;
+
+import app.Game;
 import app.misc.Keybinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
@@ -86,7 +90,7 @@ public class SettingsPane extends BorderPane{
 		grid.addRow(r++, label("Effects:"), effects);
 		grid.addRow(r++, label("Atmosphere"), atmosphereVolume);
 		setBottom(back = new Button("Back"));
-		back.setOnAction(e->{if(onReturn!=null)onReturn.run();});
+		back.setOnAction(e->{Game.saveUserdata(); if(onReturn!=null)onReturn.run();});
 		
 		grid.setAlignment(Pos.CENTER);
 		colorAdjust = new ColorAdjust();
@@ -110,6 +114,38 @@ public class SettingsPane extends BorderPane{
 		extra(effects);
 		extra(atmosphereVolume);
 		
+	}
+	
+	public void exportSettings(HashMap<String, Serializable> map) {
+		map.put("SETTING.CONTRAST", 			contrast.getValue()		);
+		map.put("SETTING.BRIGHTNESS", 			brightness.getValue()	);
+		map.put("SETTING.SATURATION", 			saturation.getValue()	);
+		map.put("SETTING.MASTER_VOLUME", 		masterVolume.getValue() );
+		map.put("SETTING.MUSIC_VOLUME", 		music.getValue()		);
+		map.put("SETTING.EFFECTS_VOLUME", 		effects.getValue()		);
+		map.put("SETTING.ATMOSPHERE_VOLUME", 	atmosphereVolume.getValue());
+		map.put("SETTING.KEYBINDING.UP", 		up.getKeyCode()			);
+		map.put("SETTING.KEYBINDING.DOWN", 		down.getKeyCode()		);
+		map.put("SETTING.KEYBINDING.LEFT", 		left.getKeyCode()		);
+		map.put("SETTING.KEYBINDING.RIGHT", 	right.getKeyCode()		);
+		map.put("SETTING.KEYBINDING.PAUSE", 	pauseKey.getKeyCode()	);
+		map.put("SETTING.KEYBINDING.SPRINT", 	sprint.getKeyCode()		);
+	}
+	public void importSettings(HashMap<String, Serializable> map) {
+		if(map.containsKey("SETTING.CONTRAST")) 			contrast		.setValue((double) map.get("SETTING.CONTRAST"));
+		if(map.containsKey("SETTING.BRIGHTNESS")) 			brightness		.setValue((double) map.get("SETTING.BRIGHTNESS"));
+		if(map.containsKey("SETTING.SATURATION")) 			saturation		.setValue((double) map.get("SETTING.SATURATION"));
+		if(map.containsKey("SETTING.MASTER_VOLUME")) 		masterVolume	.setValue((double) map.get("SETTING.MASTER_VOLUME"));
+		if(map.containsKey("SETTING.MUSIC_VOLUME")) 		music			.setValue((double) map.get("SETTING.MUSIC_VOLUME"));
+		if(map.containsKey("SETTING.EFFECTS_VOLUME")) 		effects			.setValue((double) map.get("SETTING.EFFECTS_VOLUME"));
+		if(map.containsKey("SETTING.ATMOSPHERE_VOLUME")) 	atmosphereVolume.setValue((double) map.get("SETTING.ATMOSPHERE_VOLUME"));
+		
+		if(map.containsKey("SETTING.KEYBINDING.UP")) 		up		.setKeyCode((KeyCode) map.get("SETTING.KEYBINDING.UP"));
+		if(map.containsKey("SETTING.KEYBINDING.DOWN")) 		down	.setKeyCode((KeyCode) map.get("SETTING.KEYBINDING.DOWN"));
+		if(map.containsKey("SETTING.KEYBINDING.LEFT")) 		left	.setKeyCode((KeyCode) map.get("SETTING.KEYBINDING.LEFT"));
+		if(map.containsKey("SETTING.KEYBINDING.RIGHT")) 	right	.setKeyCode((KeyCode) map.get("SETTING.KEYBINDING.RIGHT"));
+		if(map.containsKey("SETTING.KEYBINDING.PAUSE")) 	pauseKey.setKeyCode((KeyCode) map.get("SETTING.KEYBINDING.PAUSE"));
+		if(map.containsKey("SETTING.KEYBINDING.SPRINT")) 	sprint	.setKeyCode((KeyCode) map.get("SETTING.KEYBINDING.SPRINT"));
 	}
 	
 	private Label label(String text) {

@@ -22,4 +22,8 @@ public class Keybinding extends Button{
 	public KeyCode getKeyCode() {
 		return code;
 	}
+	public void setKeyCode(KeyCode c) {
+		code = c;
+		setText(c.toString());
+	}
 }
