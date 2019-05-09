@@ -214,9 +214,16 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 		if(name == null) {name = System.getProperty("user.name");}
 		if(name == null) {name = "[?]";}
 		Game.instance().getHighScorePane().addScore(name, score);
-		score = 0;
-		setGold(0);
-		inventory.clear();
+		reset();
 		Platform.runLater(Game.instance().getMainMenu()::returnToMainMenu);
+	}
+
+	public void reset() {
+		health.set(maxHealth.get());
+		stamina.set((int) maxStamina);
+		sonic = false;
+		score = 0;
+		setGold( 0 );
+		inventory.clear();
 	}
 }

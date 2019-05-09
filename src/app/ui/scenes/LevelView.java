@@ -151,7 +151,7 @@ public class LevelView extends Scene{
 		}
 	}
 	public void resetAll() {
-		player = new Player(5);
+		player.reset();
 		Keyboard.releaseAll();
 	}
 	

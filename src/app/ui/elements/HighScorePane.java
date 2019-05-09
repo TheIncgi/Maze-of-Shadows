@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import app.Game;
+import app.engine.entity.Player;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -58,8 +59,10 @@ public class HighScorePane extends Pane{
 		grid.setAlignment(Pos.CENTER);
 		
 		int i = 0;
+		Label tmp;
 		for( ScoreEntry e : entries) {
-			grid.addRow(row++, heading(String.valueOf(row-1)), label(e.getName()), label(String.valueOf(e.getScore())), label(e.getDate().toString()));
+			grid.addRow(row++, heading(String.valueOf(row-1)), label(e.getName()), tmp = label(String.valueOf(e.getScore())), label(e.getDate().toString()));
+			if(e.cheater) tmp.setTextFill(Color.RED);
 			if(++i>=5) break;
 		}
 		
@@ -72,8 +75,9 @@ public class HighScorePane extends Pane{
 	
 	public void addScore(String name, int score) {
 		ScoreEntry e = new ScoreEntry(name, score, Date.from(Instant.now()));
+		if(Player.sonic) e.markCheater();
 		int i = 0;
-		while(entries.get(i).score > e.score) i++;
+		while(entries.size() > i && entries.get(i).score > e.score) i++;
 		entries.add(i,e);
 		Game.saveUserdata();
 		fillGrid();
@@ -111,6 +115,7 @@ public class HighScorePane extends Pane{
 		private final String name;
 		private final long score;
 		private final Date date;
+		private boolean cheater = false;
 		
 		public ScoreEntry(String name, long score, Date date) {
 			super();
@@ -127,7 +132,7 @@ public class HighScorePane extends Pane{
 		public Date getDate() {
 			return date;
 		}
-		
+		public void markCheater() {cheater = true;}
 	}
 
 	public void exportSettings(HashMap<String, Serializable> userdata) {
