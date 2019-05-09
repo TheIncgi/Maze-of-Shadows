@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import app.Game;
 import app.engine.Engine;
 import app.engine.tiles.BaseTile;
+import app.misc.DoublePosition;
+import app.misc.Utils;
 import app.ui.elements.AnimatedDrawable;
 import app.ui.elements.IDrawable;
 import app.ui.elements.MapPane;
@@ -36,7 +38,11 @@ public class Monster extends LivingEntity {
 		if(next!=null && !next.isPassable() || Math.random() < 1/Engine.ticksPerSecond())
 			dir = TravelDir.random();
 		
-		walk(Math.atan2(dir.getDY(), dir.getDX())	);
+		DoublePosition playerPos = Game.instance().getLevelView().getPlayer().getPos();
+		if( 1.5 > (Utils.distance(playerPos.getX(), playerPos.getY(), pos.getX(), pos.getY()) / Game.getPixelPerTile() )  )
+			walk(Math.atan2(playerPos.getY()-pos.getY(), playerPos.getX()-pos.getX()));
+		else
+			walk(Math.atan2(dir.getDY(), dir.getDX())	);
 		
 
 		doMovement();

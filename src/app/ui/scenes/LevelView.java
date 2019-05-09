@@ -47,6 +47,10 @@ public class LevelView extends Scene{
 				mapPane.update();
 			}
 		}
+		@Override
+		protected void finalize() throws Throwable {
+			System.err.println("Warning: Animation timer discarded");
+		}
 	};
 	private Player player;
 	public LevelView() {

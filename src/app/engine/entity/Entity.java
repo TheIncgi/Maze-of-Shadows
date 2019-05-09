@@ -9,7 +9,7 @@ import app.ui.elements.IDrawable;
 import app.ui.elements.MapPane;
 
 public abstract class Entity implements TickListener {
-	DoublePosition pos  = new DoublePosition(0,0);
+	final DoublePosition pos  = new DoublePosition(0,0);
 	//BoundingBox bounds = new BoundingBox(0, 0, 1, 1);
 	IntegerPosition lastTilePos = null;
 	//BoundingBox visualBounds;

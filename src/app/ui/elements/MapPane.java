@@ -78,6 +78,13 @@ public class MapPane extends Pane{
 		}
 		for (Entity entity : entitites) {
 			ImageView ev = entityViews.get(entity);
+			boolean flag = true
+					&& -ev.getTranslateX() <= MapPane.this.getTranslateX() + Game.SIZE +pixelsPerTile()/4
+					&& MapPane.this.getTranslateX() <= -ev.getTranslateX() + Game.SIZE +pixelsPerTile()/4
+					&& -ev.getTranslateY() <= MapPane.this.getTranslateY() + Game.SIZE +pixelsPerTile()/4
+					&& MapPane.this.getTranslateY() <= -ev.getTranslateY() + Game.SIZE +pixelsPerTile()/4
+					;
+			ev.setVisible(flag);
 			ev.translateXProperty().set(entity.getPos().getX() - ev.getFitWidth()/2);
 			ev.translateYProperty().set(entity.getPos().getY() - ev.getFitHeight()/2);
 		}

@@ -104,6 +104,13 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 		drawable.onTick(now);
 		
 		doMovement();
+		Platform.runLater(()->{
+		Game.instance().getGameHud().debugText.setText(String.format("Pos: <%d, %d> Goal: <%d, %d>", 
+				(int)(pos.getX() / Game.getPixelPerTile()), (int)(pos.getY()/Game.getPixelPerTile()),
+				Game.instance().getEngine().getMap().getGoalPos().getX(),
+				Game.instance().getEngine().getMap().getGoalPos().getY()
+				));
+		});
 	}
 	
 	
@@ -224,5 +231,6 @@ public class Player extends LivingEntity implements IEmissiveEntity{
 		score = 0;
 		setGold( 0 );
 		inventory.clear();
+		Game.instance().getGameHud().disableDebugText();
 	}
 }

@@ -20,7 +20,8 @@ public class Map {
 	ArrayList<Emissive> lightEmitters = new ArrayList<>();
 	ArrayList<IntegerPosition> monsterSpawns = new ArrayList<>();
 	public double minLightLevel = .04;
-
+	public IntegerPosition goalPos;
+	
 	public static double lightFactor(double height, double pathDistance) {
 		double angleOfImpact = Math.atan2(pathDistance, height);
 		return Math.cos(angleOfImpact);
@@ -186,5 +187,10 @@ public class Map {
 	
 	public ArrayList<IntegerPosition> getMonsterSpawns() {
 		return monsterSpawns;
+	}
+
+
+	public IntegerPosition getGoalPos() {
+		return goalPos;
 	}
 }

@@ -2,6 +2,7 @@ package app.ui.elements;
 
 import app.Game;
 import app.ui.scenes.LevelView;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -28,7 +29,7 @@ public class GameHUD extends BorderPane{
 //	public Circle debug3 = new Circle(height/2, Color.GRAY);
 //	public Circle debug4 = new Circle(height/2, Color.GRAY);
 	
-	//public Label debugText = new Label();
+	public Label debugText = new Label();
 	public Label goldAmount = new Label("Very poor");
 	
 	public GameHUD() {
@@ -48,9 +49,20 @@ public class GameHUD extends BorderPane{
 		level.textProperty().bind(LevelView.getLevelProperty().asString());
 		
 		
-		//debugText.setBackground( new Background(new BackgroundFill(Color.WHITE, new CornerRadii(5), new Insets(0))) );
+		debugText.setBackground( new Background(new BackgroundFill(Color.WHITE, new CornerRadii(5), new Insets(0))) );
 		
 		top.getChildren().addAll(healthLabel, healthBar, staminaLabel, staminaBar, new Label("Gold:"), goldAmount, levelLabel, level);
 		//setBottom(debugText);
+	}
+	
+	public void enableDebugText() {
+		Platform.runLater(()->{
+			setBottom(debugText);
+		});
+	}
+	public void disableDebugText() {
+		Platform.runLater(()->{
+		setBottom(null);
+		});
 	}
 }

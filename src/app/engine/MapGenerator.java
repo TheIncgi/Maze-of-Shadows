@@ -117,6 +117,7 @@ public class MapGenerator {
 //		}
 		IntegerPosition goalPos = open.get(random.nextInt(open.size()));
 		System.out.println("Goal:"+goalPos);
+		map.goalPos = goalPos;
 		map.setTile(new GoalTile(), goalPos.getX(), goalPos.getY());
 
 		IntegerPosition tmpPos = new IntegerPosition(0, 0), tmp2;  //FIXME this code removes extra tiles to make the halways wider, needs fixing

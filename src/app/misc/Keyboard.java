@@ -50,6 +50,7 @@ public class Keyboard {
 		Game.instance().getGameHud().staminaBar.progressProperty().unbind();
 		Game.instance().getGameHud().staminaBar.setProgress(-1);
 		Game.instance().getPausePane().enableShop();
+		Game.instance().getGameHud().enableDebugText();
 		
 		
 	}
