@@ -1,5 +1,6 @@
 package app.misc;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -11,6 +12,7 @@ import javax.sound.sampled.LineEvent.Type;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JOptionPane;
 
 import app.Game;
 import app.ui.elements.SettingsPane;
@@ -78,7 +80,7 @@ public class SoundManager {
 	private static Clip getClip(String resName) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
 		if(resName==null) return null;
 		Clip clip = AudioSystem.getClip();
-		clip.open(  AudioSystem.getAudioInputStream(R.class.getResourceAsStream(resName)));
+		clip.open(  AudioSystem.getAudioInputStream(new BufferedInputStream(R.class.getResourceAsStream(resName))));
 		return clip;
 	}
 	
@@ -103,6 +105,7 @@ public class SoundManager {
 	
 	public static Clip playSound(Sounds sound, SoundChannel channel) { 
 		Clip c = getSound(sound, channel); 
+		if(c==null) { System.err.println("Warning NULL CLIP IN PLAY SOUND");return null; }
 		c.start(); 
 		return c;
 	}
@@ -115,6 +118,7 @@ public class SoundManager {
 			return clip;
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
+			JOptionPane.showConfirmDialog(null, e.getMessage());
 			return null;
 		}
 	}
