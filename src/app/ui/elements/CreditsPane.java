@@ -23,9 +23,9 @@ public class CreditsPane extends Pane {
 		back = new Button("Back");
 		box.getChildren().addAll(
 				label("Credits:", 35),
-				new HBox(5, label("Jose - [Description]", 20)),
-				new HBox(5, label("Jaime - [Description]", 20)),
-				new HBox(5, label("Ian - [Description]", 20))
+				new HBox(5, label("Jose Torres", 20)),
+				new HBox(5, label("Jaime Matos", 20)),
+				new HBox(5, label("Ian Charrett-Dykes", 20))
 				);
 		box.setAlignment(Pos.CENTER);
 		box.translateXProperty().bind(widthProperty().divide(2).subtract(box.widthProperty().divide(2)));

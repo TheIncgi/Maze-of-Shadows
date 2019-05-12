@@ -1,6 +1,7 @@
 package app.ui.elements;
 
 import app.Game;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -21,8 +22,7 @@ public class HowToPlayPane extends Pane{
 		back = new Button("Back");
 		
 		Label theHeading = new Label("How to Play:");
-		Label theText = new Label("The player navigates though the maze using the\nmovement keys while trying to avoid monsters and collect loot\nThe player can use items using item keybindings."
-				+ "\nExample text\nExample text\nExample text....");
+		Label theText = new Label("Dodge the monsters!\nCollect as much gold as you can!");
 		
 		
 		
