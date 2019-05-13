@@ -22,7 +22,7 @@ public class HowToPlayPane extends Pane{
 		back = new Button("Back");
 		
 		Label theHeading = new Label("How to Play:");
-		Label theText = new Label("Dodge the monsters!\nCollect as much gold as you can!");
+		Label theText = new Label("Use the arrow keys, or whatever keys you set movement to, to move around and navigate the maze. You must avoid the monster that chases you while attempting to find the exit to the maze. Finding the exit finishes the level and allows you to move on to the next area. Every few levels there is a safe zone for you to rest at. \r\n"  );
 		
 		
 		
